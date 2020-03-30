@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Vue, { PluginObject } from 'vue';
 import axios from 'axios';
 
@@ -12,41 +13,30 @@ const config = {
   // withCredentials: true, // Check cross-site Access-Control
 };
 
-const _axios = axios.create(config);
+const axiosInstance = axios.create(config);
 
-_axios.interceptors.request.use(
-  (cfg) =>
-    // Do something before request is sent
-    cfg,
-  (err) =>
-    // Do something with request error
-    Promise.reject(err)
-  ,
+axiosInstance.interceptors.request.use(
+  (cfg) => cfg,
+  (err) => Promise.reject(err),
 );
 
-// Add a response interceptor
-_axios.interceptors.response.use(
-  (res) =>
-    // Do something with response data
-    res,
-  (err) =>
-    // Do something with response error
-    Promise.reject(err)
-  ,
+axiosInstance.interceptors.response.use(
+  (res) => res,
+  (err) => Promise.reject(err),
 );
 
 const Plugin: PluginObject<any> = {
   install: (Vue) => {
-    Vue.$axios = _axios;
+    Vue.$axios = axiosInstance;
   },
 };
 Plugin.install = (Vue) => {
-  Vue.$axios = _axios;
-  window.axios = _axios;
+  Vue.$axios = axiosInstance;
+  window.axios = axiosInstance;
   Object.defineProperties(Vue.prototype, {
     $axios: {
       get() {
-        return _axios;
+        return axiosInstance;
       },
     },
   });

@@ -15,6 +15,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
-    'max-len': ['warn', 120]
+    '@typescript-eslint/no-explicit-any': 'off',
+    'max-len': ['warn', 120],
   },
 };
