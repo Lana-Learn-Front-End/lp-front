@@ -14,7 +14,7 @@
     </v-app-bar>
 
     <v-content>
-      <v-container fluid fill-height>
+      <v-container fill-height class="pt-6 pt-md-8 pt-lg-10 align-start">
         <router-view></router-view>
       </v-container>
     </v-content>
