@@ -1,0 +1,18 @@
+// fix https://github.com/vuetifyjs/vuetify/issues/9773
+.container.fill-height > .row {
+  max-width: initial;
+  width: 100%;
+}
+
+// fix the weird color of auto complete
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 3600s ease-in-out 0s;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.w-100 {
+  width: 100%;
+}

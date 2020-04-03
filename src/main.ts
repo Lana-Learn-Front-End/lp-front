@@ -3,9 +3,12 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 
+import './styles.scss';
+
 import vuetify from './plugins/vuetify';
 import './plugins/axios';
 import './plugins/vee-validate';
+import './plugins/class-component-hooks';
 
 Vue.config.productionTip = false;
 
