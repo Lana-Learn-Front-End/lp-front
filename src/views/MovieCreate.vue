@@ -7,7 +7,7 @@
           <movie-form
             type="POST"
             url="/api/movies"
-            @success="onSuccess"
+            @success="onSuccess($event)"
           >
           </movie-form>
         </v-card-text>
