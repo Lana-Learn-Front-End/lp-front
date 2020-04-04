@@ -49,13 +49,13 @@
     </v-select>
     <div class="d-flex mt-5">
       <v-spacer></v-spacer>
-      <v-btn text @click="submit()" :disabled="!valid">Submit</v-btn>
+      <v-btn text @click="onSubmit()" :disabled="!valid">Submit</v-btn>
     </div>
   </validation-observer>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator';
 import { ValidationObserver } from 'vee-validate';
 import Cast from '@/models/cast';
 import Tag from '@/models/tag';
@@ -87,12 +87,22 @@ export default class MovieForm extends Vue {
     this.form = getFormDataFromMovie(newVal);
   }
 
+  @Emit()
+  success(newMovie: Movie): Movie {
+    return newMovie;
+  }
+
+  @Emit()
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  failed(): void {
+  }
+
   async created(): Promise<void> {
     this.casts = (await this.$axios.get<Cast[]>('/api/tags/all')).data;
     this.tags = (await this.$axios.get<Tag[]>('/api/tags/all')).data;
   }
 
-  async submit(): Promise<void> {
+  async onSubmit(): Promise<void> {
     await this.$refs.observer.validate();
     this.form.name = capitalize(this.form.name);
     this.form.code = uppercaseCode(this.form.code);
@@ -101,8 +111,7 @@ export default class MovieForm extends Vue {
       const res: AxiosResponse<Movie> = this.type === 'PUT'
         ? await this.$axios.put<Movie>(this.url, this.form)
         : await this.$axios.post<Movie>(this.url, this.form);
-      const id: string = res.data.id.toString();
-      await this.$router.push({ name: 'MovieEdit', params: { id } });
+      this.success(res.data);
     } catch (error) {
       const res: AxiosResponse | undefined = error.response;
       if (res && res.status === 409) {
@@ -110,6 +119,7 @@ export default class MovieForm extends Vue {
           code: 'The code already existed',
         });
       }
+      this.failed();
     }
   }
 }

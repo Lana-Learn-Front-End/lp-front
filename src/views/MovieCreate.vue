@@ -4,7 +4,12 @@
       <v-card>
         <v-card-title>New Movie</v-card-title>
         <v-card-text>
-          <movie-form type="POST" url="/api/movies"></movie-form>
+          <movie-form
+            type="POST"
+            url="/api/movies"
+            @success="onSuccess"
+          >
+          </movie-form>
         </v-card-text>
       </v-card>
     </v-col>
@@ -14,10 +19,14 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import MovieForm from '@/components/MovieForm.vue';
+import Movie from '@/models/movie';
 
 @Component({
   components: { MovieForm },
 })
 export default class MovieCreate extends Vue {
+  onSuccess(movie: Movie): void {
+    this.$router.push({ name: 'MovieEdit', params: { id: movie.id.toString() } });
+  }
 }
 </script>
