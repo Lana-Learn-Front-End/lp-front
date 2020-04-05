@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import MovieForm from '@/components/MovieForm.vue';
+import MovieForm from '@/components/movie/MovieForm.vue';
 import Movie from '@/models/movie';
 
 @Component({

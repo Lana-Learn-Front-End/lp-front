@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
-import MovieCreate from '@/views/MovieCreate.vue';
-import MovieEdit from '@/views/MovieEdit.vue';
+import MovieCreate from '@/views/movie/MovieCreate.vue';
+import MovieEdit from '@/views/movie/MovieEdit.vue';
 
 Vue.use(VueRouter);
 

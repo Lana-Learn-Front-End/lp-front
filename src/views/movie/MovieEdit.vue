@@ -25,9 +25,9 @@
 import { Component } from 'vue-property-decorator';
 import { Route } from 'vue-router';
 import Movie from '@/models/movie';
-import MovieCreate from '@/views/MovieCreate.vue';
+import MovieCreate from '@/views/movie/MovieCreate.vue';
 import { mixins } from 'vue-class-component';
-import MovieCoverUpload from '@/components/MovieCoverUpload.vue';
+import MovieCoverUpload from '@/components/movie/MovieCoverUpload.vue';
 
 @Component({
   components: { MovieCoverUpload },
