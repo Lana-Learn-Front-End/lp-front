@@ -68,6 +68,7 @@ import Cast from '@/models/cast';
 import Tag from '@/models/tag';
 import { AxiosError, AxiosResponse } from 'axios';
 import Movie from '@/models/movie';
+import { capitalize } from '@/util/string-format';
 
 @Component
 export default class MovieForm extends Vue {
@@ -162,14 +163,6 @@ function getFormDataFromMovie(movie: Movie | undefined | null): MovieFormData {
     tags: [],
     casts: [],
   };
-}
-
-function capitalize(str: string): string {
-  return str
-    .trim()
-    .split(' ')
-    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
 }
 
 function uppercaseCode(code: string): string {
