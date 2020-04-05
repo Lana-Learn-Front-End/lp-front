@@ -1,14 +1,25 @@
 import Vue from 'vue';
-import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
+import VueRouter, { RouteConfig } from 'vue-router';
+import MovieCreate from '@/views/MovieCreate.vue';
+import MovieEdit from '@/views/MovieEdit.vue';
 
 Vue.use(VueRouter);
 
-const routes = [
+const routes: RouteConfig[] = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'Root',
+    redirect: '/movies/create',
+  },
+  {
+    path: '/movies/create',
+    name: 'MovieCreate',
+    component: MovieCreate,
+  },
+  {
+    path: '/movies/:id/edit',
+    name: 'MovieEdit',
+    component: MovieEdit,
   },
 ];
 

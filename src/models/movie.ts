@@ -5,6 +5,7 @@ export default interface Movie {
   id: number;
   code: string;
   name: string;
+  cover: string;
   casts: Cast[];
   tags: Tag[];
 }

@@ -49,7 +49,14 @@
     </v-select>
     <div class="d-flex mt-5">
       <v-spacer></v-spacer>
-      <v-btn text @click="onSubmit()" :disabled="!valid">Submit</v-btn>
+      <v-btn
+        text
+        @click="onSubmit()"
+        :disabled="!valid && loading"
+        :loading="loading"
+      >
+        Submit
+      </v-btn>
     </div>
   </validation-observer>
 </template>
@@ -59,7 +66,7 @@ import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator';
 import { ValidationObserver } from 'vee-validate';
 import Cast from '@/models/cast';
 import Tag from '@/models/tag';
-import { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import Movie from '@/models/movie';
 
 @Component
@@ -75,6 +82,7 @@ export default class MovieForm extends Vue {
   form!: MovieFormData;
   casts: Cast[] = [];
   tags: Tag[] = [];
+  loading = false;
 
   data() {
     return {
@@ -94,7 +102,13 @@ export default class MovieForm extends Vue {
 
   @Emit()
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  failed(): void {
+  error(error: AxiosError): AxiosError {
+    return error;
+  }
+
+  @Emit()
+  submitted(): MovieFormData {
+    return this.form;
   }
 
   async created(): Promise<void> {
@@ -103,10 +117,10 @@ export default class MovieForm extends Vue {
   }
 
   async onSubmit(): Promise<void> {
-    await this.$refs.observer.validate();
     this.form.name = capitalize(this.form.name);
     this.form.code = uppercaseCode(this.form.code);
-
+    this.submitted();
+    this.loading = true;
     try {
       const res: AxiosResponse<Movie> = this.type === 'PUT'
         ? await this.$axios.put<Movie>(this.url, this.form)
@@ -119,7 +133,9 @@ export default class MovieForm extends Vue {
           code: 'The code already existed',
         });
       }
-      this.failed();
+      this.error(error);
+    } finally {
+      this.loading = false;
     }
   }
 }
