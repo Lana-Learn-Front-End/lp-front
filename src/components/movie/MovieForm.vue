@@ -51,11 +51,31 @@
       <v-spacer></v-spacer>
       <v-btn
         text
-        @click="onSubmit()"
+        class="error--text"
+        v-if="edit && enableDelete"
+        @click="onDelete()"
+        :disabled="loading"
+        :loading="loading"
+      >
+        Delete
+      </v-btn>
+      <v-btn
+        text
+        v-if="edit"
+        @click="onUpdate()"
         :disabled="!valid && loading"
         :loading="loading"
       >
-        Submit
+        Update
+      </v-btn>
+      <v-btn
+        text
+        v-if="!edit"
+        @click="onCreate()"
+        :disabled="!valid && loading"
+        :loading="loading"
+      >
+        Create
       </v-btn>
     </div>
   </validation-observer>
@@ -72,10 +92,8 @@ import { capitalize } from '@/util/string-format';
 
 @Component
 export default class MovieForm extends Vue {
-  @Prop({ default: '' }) url!: string;
-  @Prop({ default: 'POST' }) type!: 'POST' | 'PUT';
-  @Prop({ default: null }) movie?: Movie;
-
+  @Prop() edit?: Movie;
+  @Prop({ type: Boolean }) enableDelete!: boolean;
   $refs!: {
     observer: InstanceType<typeof ValidationObserver>;
   };
@@ -91,52 +109,70 @@ export default class MovieForm extends Vue {
     };
   }
 
-  @Watch('movie', { immediate: true })
-  movieChanged(newVal: Movie) {
-    this.form = getFormDataFromMovie(newVal);
+  @Watch('edit', { immediate: true })
+  movieChanged(movie: Movie) {
+    this.form = getFormDataFromMovie(movie);
   }
 
   @Emit()
-  success(newMovie: Movie): Movie {
-    return newMovie;
+  create(movie: Movie): Movie {
+    return movie;
   }
 
   @Emit()
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  error(error: AxiosError): AxiosError {
-    return error;
+  update(movie: Movie): Movie {
+    return movie;
   }
 
   @Emit()
-  submitted(): MovieFormData {
-    return this.form;
+  delete(movie: Movie): Movie {
+    return movie;
   }
 
-  async created(): Promise<void> {
-    this.casts = (await this.$axios.get<Cast[]>('/api/tags/all')).data;
+  async created() {
+    this.casts = (await this.$axios.get<Cast[]>('/api/casts/all')).data;
     this.tags = (await this.$axios.get<Tag[]>('/api/tags/all')).data;
   }
 
-  async onSubmit(): Promise<void> {
+  onDelete() {
+    if (this.edit) {
+      this.$axios
+        .delete(`/api/movies/${this.edit.id}`)
+        .then(() => this.delete(this.edit as Movie));
+    }
+  }
+
+  onCreate() {
     this.form.name = capitalize(this.form.name);
     this.form.code = uppercaseCode(this.form.code);
-    this.submitted();
     this.loading = true;
-    try {
-      const res: AxiosResponse<Movie> = this.type === 'PUT'
-        ? await this.$axios.put<Movie>(this.url, this.form)
-        : await this.$axios.post<Movie>(this.url, this.form);
-      this.success(res.data);
-    } catch (error) {
-      const res: AxiosResponse | undefined = error.response;
-      if (res && res.status === 409) {
-        this.$refs.observer.setErrors({
-          code: 'The code already existed',
+    this.$axios
+      .post<Movie>('/api/movies', this.form)
+      .then((res: AxiosResponse) => this.create(res.data))
+      .catch((err: AxiosError) => {
+        if (err.response && err.response.status === 409) {
+          this.$refs.observer.setErrors({
+            code: 'The code already existed',
+          });
+        }
+      })
+      .finally(() => {
+        this.loading = false;
+      });
+  }
+
+  onUpdate() {
+    if (this.edit) {
+      this.form.name = capitalize(this.form.name);
+      this.form.code = uppercaseCode(this.form.code);
+
+      this.loading = true;
+      this.$axios
+        .put<Movie>(`/api/movies/${this.edit.id}`, this.form)
+        .then((res: AxiosResponse) => this.update(res.data))
+        .finally(() => {
+          this.loading = false;
         });
-      }
-      this.error(error);
-    } finally {
-      this.loading = false;
     }
   }
 }

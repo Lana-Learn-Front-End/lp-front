@@ -5,9 +5,7 @@
         <v-card-title>New Movie</v-card-title>
         <v-card-text>
           <movie-form
-            type="POST"
-            url="/api/movies"
-            @success="onSuccess($event)"
+            @create="onSuccess($event)"
           >
           </movie-form>
         </v-card-text>

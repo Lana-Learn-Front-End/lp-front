@@ -9,10 +9,8 @@
         </v-col>
         <v-col>
           <movie-form
-            :url="`/api/movies/${movie.id}`"
-            type="PUT"
-            :movie="movie"
-            @success="fetchMovieOrTo404($event.id)"
+            :edit="movie"
+            @update="fetchMovieOrTo404($event.id)"
           >
           </movie-form>
         </v-col>
