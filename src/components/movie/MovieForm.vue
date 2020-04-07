@@ -49,6 +49,7 @@
     </v-select>
     <div class="d-flex mt-5">
       <v-spacer></v-spacer>
+      <slot name="actions"></slot>
       <v-btn
         text
         class="error--text"
