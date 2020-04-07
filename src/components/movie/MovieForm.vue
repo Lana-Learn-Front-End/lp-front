@@ -172,11 +172,11 @@ export default class MovieForm extends Vue {
   }
 
   async onCreate() {
-    this.form.name = capitalize(this.form.name);
-    this.form.code = uppercaseCode(this.form.code);
-
     if (await this.isFormValid()) {
+      this.form.name = capitalize(this.form.name);
+      this.form.code = uppercaseCode(this.form.code);
       this.loading = true;
+
       this.$axios
         .post<Movie>('/api/movies', this.form)
         .then((res: AxiosResponse) => this.create(res.data))
@@ -194,19 +194,17 @@ export default class MovieForm extends Vue {
   }
 
   async onUpdate() {
-    if (this.edit) {
+    if (this.edit && await this.isFormValid()) {
       this.form.name = capitalize(this.form.name);
       this.form.code = uppercaseCode(this.form.code);
 
-      if (await this.isFormValid()) {
-        this.loading = true;
-        this.$axios
-          .put<Movie>(`/api/movies/${this.edit.id}`, this.form)
-          .then((res: AxiosResponse) => this.update(res.data))
-          .finally(() => {
-            this.loading = false;
-          });
-      }
+      this.loading = true;
+      this.$axios
+        .put<Movie>(`/api/movies/${this.edit.id}`, this.form)
+        .then((res: AxiosResponse) => this.update(res.data))
+        .finally(() => {
+          this.loading = false;
+        });
     }
   }
 
