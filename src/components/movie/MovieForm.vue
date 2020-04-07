@@ -53,12 +53,39 @@
         text
         class="error--text"
         v-if="edit && enableDelete"
-        @click="onDelete()"
+        @click.stop="deleteDialog = true"
         :disabled="loading"
         :loading="loading"
       >
         Delete
       </v-btn>
+      <v-dialog
+        v-model="deleteDialog"
+        max-width="300px"
+        persistent
+      >
+        <template v-slot:default>
+          <v-card>
+            <v-card-title>Are you sure?</v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                text
+                @click.stop="deleteDialog = false"
+              >
+                Cancel
+              </v-btn>
+              <v-btn
+                text
+                @click="onDelete()"
+                class="error--text"
+              >
+                Delete
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </template>
+      </v-dialog>
       <v-btn
         text
         v-if="edit"
@@ -94,14 +121,16 @@ import { capitalize } from '@/util/string-format';
 export default class MovieForm extends Vue {
   @Prop() edit?: Movie;
   @Prop({ type: Boolean }) enableDelete!: boolean;
-  $refs!: {
-    observer: InstanceType<typeof ValidationObserver>;
-  };
 
   form!: MovieFormData;
   casts: Cast[] = [];
   tags: Tag[] = [];
   loading = false;
+  deleteDialog = false;
+
+  $refs!: {
+    observer: InstanceType<typeof ValidationObserver>;
+  };
 
   data() {
     return {
@@ -142,38 +171,48 @@ export default class MovieForm extends Vue {
     }
   }
 
-  onCreate() {
+  async onCreate() {
     this.form.name = capitalize(this.form.name);
     this.form.code = uppercaseCode(this.form.code);
-    this.loading = true;
-    this.$axios
-      .post<Movie>('/api/movies', this.form)
-      .then((res: AxiosResponse) => this.create(res.data))
-      .catch((err: AxiosError) => {
-        if (err.response && err.response.status === 409) {
-          this.$refs.observer.setErrors({
-            code: 'The code already existed',
-          });
-        }
-      })
-      .finally(() => {
-        this.loading = false;
-      });
-  }
 
-  onUpdate() {
-    if (this.edit) {
-      this.form.name = capitalize(this.form.name);
-      this.form.code = uppercaseCode(this.form.code);
-
+    if (await this.isFormValid()) {
       this.loading = true;
       this.$axios
-        .put<Movie>(`/api/movies/${this.edit.id}`, this.form)
-        .then((res: AxiosResponse) => this.update(res.data))
+        .post<Movie>('/api/movies', this.form)
+        .then((res: AxiosResponse) => this.create(res.data))
+        .catch((err: AxiosError) => {
+          if (err.response && err.response.status === 409) {
+            this.$refs.observer.setErrors({
+              code: 'The code already existed',
+            });
+          }
+        })
         .finally(() => {
           this.loading = false;
         });
     }
+  }
+
+  async onUpdate() {
+    if (this.edit) {
+      this.form.name = capitalize(this.form.name);
+      this.form.code = uppercaseCode(this.form.code);
+
+      if (await this.isFormValid()) {
+        this.loading = true;
+        this.$axios
+          .put<Movie>(`/api/movies/${this.edit.id}`, this.form)
+          .then((res: AxiosResponse) => this.update(res.data))
+          .finally(() => {
+            this.loading = false;
+          });
+      }
+    }
+  }
+
+  private async isFormValid(): Promise<boolean> {
+    await this.$refs.observer.validate();
+    return Object.values(this.$refs.observer.fields).every((field) => field.valid);
   }
 }
 

@@ -11,6 +11,8 @@
           <movie-form
             :edit="movie"
             @update="fetchMovieOrTo404($event.id)"
+            enable-delete
+            @delete="returnToManagePage()"
           >
           </movie-form>
         </v-col>
@@ -49,6 +51,10 @@ export default class MovieEdit extends mixins(MovieCreate) {
     } catch (e) {
       await this.$router.push({ name: '404' });
     }
+  }
+
+  returnToManagePage() {
+    this.$router.push({ name: 'MovieManage' });
   }
 }
 </script>
