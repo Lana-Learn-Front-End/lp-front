@@ -14,8 +14,21 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    '@typescript-eslint/no-inferrable-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
+    'class-methods-use-this': 'off',
+    'object-curly-newline': [
+      'warn',
+      {
+        'ImportDeclaration': {
+          'multiline': true,
+          'minProperties': 8
+        }
+      }
+    ],
+    'lines-between-class-members': 'off',
     'max-len': ['warn', 120],
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-use-before-define': 'off',
+    'import/no-named-default': 'off',
+    'import/prefer-default-export': 'warn'
   },
 };
