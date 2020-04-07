@@ -22,17 +22,16 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { Route } from 'vue-router';
 import Movie from '@/models/movie';
-import MovieCreate from '@/views/movie/MovieCreate.vue';
-import { mixins } from 'vue-class-component';
 import MovieCoverUpload from '@/components/movie/MovieCoverUpload.vue';
+import MovieForm from '@/components/movie/MovieForm.vue';
 
 @Component({
-  components: { MovieCoverUpload },
+  components: { MovieCoverUpload, MovieForm },
 })
-export default class MovieEdit extends mixins(MovieCreate) {
+export default class MovieEdit extends Vue {
   movie: Movie | null = null;
   form!: any;
 
