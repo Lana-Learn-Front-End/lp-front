@@ -2,10 +2,7 @@
   <div class="img-container elevation-2">
     <v-img v-if="src" :src="src"></v-img>
 
-    <div v-if="!src" class="img-placeholder d-flex justify-center grey darken-4">
-      <v-icon x-large>insert_photo</v-icon>
-    </div>
-
+    <placeholder-image v-if="!src" :aspect-ratio="800/540"></placeholder-image>
 
     <div v-show="!img || loading" class="img-btn">
       <v-btn
@@ -63,11 +60,14 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import Movie from '@/models/movie';
 import { AxiosResponse } from 'axios';
 import { default as Cover } from '@/models/file';
+import PlaceholderImage from '@/components/PlaceholderImage.vue';
 
-@Component
+@Component({
+  components: { PlaceholderImage },
+})
 export default class MovieCoverUpload extends Vue {
   @Prop() movie!: Movie;
-  loading: boolean = false;
+  loading = false;
   img?: File;
   src!: string;
 
@@ -179,13 +179,6 @@ export default class MovieCoverUpload extends Vue {
     width: 100%;
     height: 100%;
     position: relative;
-  }
-
-  .img-placeholder {
-    width: 100%;
-    height: 100%;
-    min-width: 280px;
-    min-height: 150px;
   }
 
   .img-btn {
