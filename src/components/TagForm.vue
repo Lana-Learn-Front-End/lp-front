@@ -191,5 +191,10 @@ export default class TagForm extends Vue {
       message,
     });
   }
+
+  reset() {
+    this.name = '';
+    this.$refs.observer.reset();
+  }
 }
 </script>

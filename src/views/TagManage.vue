@@ -59,7 +59,10 @@
             {{ tag.name }}
           </v-chip>
 
-          <v-dialog v-model="updateDialog" max-width="300px">
+          <v-dialog
+            v-model="updateDialog"
+            max-width="300px"
+            @click:outside="closeUpdateDialog()">
             <template v-slot:default>
               <v-card>
                 <v-card-title>Update tag</v-card-title>
@@ -124,6 +127,11 @@ export default class TagManage extends Vue {
     this.updateDialog = true;
   }
 
+  closeUpdateDialog() {
+    this.updateDialog = false;
+    this.updateDialogTag = null;
+  }
+
   onCreated() {
     this.closeCreateDialog();
     this.fetchTags();
@@ -131,7 +139,7 @@ export default class TagManage extends Vue {
 
   closeCreateDialog() {
     this.createDialog = false;
-    (this.$refs.createForm.$refs.observer as any).reset();
+    (this.$refs.createForm as any).reset();
   }
 
   private fetchTags() {
