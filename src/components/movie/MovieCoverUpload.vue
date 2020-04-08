@@ -58,7 +58,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import Movie from '@/models/movie';
-import { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { default as Cover } from '@/models/file';
 import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
 
@@ -112,9 +112,9 @@ export default class MovieCoverUpload extends Vue {
         } else {
           await this.uploadImage(this.img);
         }
+        this.showSnackbar('Upload Success');
       } catch (e) {
-        console.log(e);
-        // TODO: show error snackbar;
+        this.showErrorSnackbar('Upload Failed!', e);
       } finally {
         this.loading = false;
         this.setImgToDefault(this.movie);
@@ -125,12 +125,11 @@ export default class MovieCoverUpload extends Vue {
   async onRemove(): Promise<void> {
     this.loading = true;
     try {
-      // remove the association first
       await this.updateMovie('');
       await this.$axios.delete(this.src);
+      this.showSnackbar('Remove Success!');
     } catch (e) {
-      console.log(e);
-      // TODO: show error snackbar;
+      this.showErrorSnackbar('Remove Failed!', e);
     } finally {
       this.loading = false;
       this.setImgToDefault(this.movie);
@@ -170,6 +169,25 @@ export default class MovieCoverUpload extends Vue {
         this.$axios.delete(`/data/images/${cover}`);
       }
     }
+  }
+
+  private showErrorSnackbar(message: string, error?: AxiosError) {
+    if (error?.response) {
+      this.$store.commit('snackbar/showError', {
+        message,
+        code: error.response.status,
+      });
+    } else {
+      this.$store.commit('snackbar/showError', {
+        message,
+      });
+    }
+  }
+
+  private showSnackbar(message: string) {
+    this.$store.commit('snackbar/show', {
+      message,
+    });
   }
 }
 </script>

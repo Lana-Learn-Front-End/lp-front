@@ -106,16 +106,19 @@ export default class TagForm extends Vue {
 
   @Emit()
   create(tag: Tag): Tag {
+    this.showSnackbar(`Tag ${tag.name} updated!`);
     return tag;
   }
 
   @Emit()
   update(tag: Tag): Tag {
+    this.showSnackbar(`Tag ${tag.name} updated!`);
     return tag;
   }
 
   @Emit()
   delete(tag: Tag): Tag {
+    this.showSnackbar(`Tag ${tag.name} deleted!`);
     return tag;
   }
 
@@ -135,11 +138,13 @@ export default class TagForm extends Vue {
       this.$axios
         .post<Tag>('/api/tags', { name: this.name })
         .then((res: AxiosResponse<Tag>) => this.create(res.data))
-        .catch((err: AxiosError) => {
-          if (err.response && err.response.status === 409) {
+        .catch((e: AxiosError) => {
+          if (e.response && e.response.status === 409) {
             this.$refs.observer.setErrors({
               name: 'The name already existed',
             });
+          } else {
+            this.showErrorSnackbar('Tag create failed!', e);
           }
         })
         .finally(() => {
@@ -156,6 +161,7 @@ export default class TagForm extends Vue {
       this.$axios
         .put<Tag>(`/api/tags/${this.edit.id}`, { name: this.name })
         .then((res: AxiosResponse<Tag>) => this.update(res.data))
+        .catch((e: AxiosError) => this.showErrorSnackbar('Tag update failed!', e))
         .finally(() => {
           this.loading = false;
         });
@@ -165,6 +171,25 @@ export default class TagForm extends Vue {
   private async isFormValid(): Promise<boolean> {
     await this.$refs.observer.validate();
     return Object.values(this.$refs.observer.fields).every((field) => field.valid);
+  }
+
+  private showErrorSnackbar(message: string, error?: AxiosError) {
+    if (error?.response) {
+      this.$store.commit('snackbar/showError', {
+        message,
+        code: error.response.status,
+      });
+    } else {
+      this.$store.commit('snackbar/showError', {
+        message,
+      });
+    }
+  }
+
+  private showSnackbar(message: string) {
+    this.$store.commit('snackbar/show', {
+      message,
+    });
   }
 }
 </script>

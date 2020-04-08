@@ -146,16 +146,19 @@ export default class MovieForm extends Vue {
 
   @Emit()
   create(movie: Movie): Movie {
+    this.showSnackbar('Movie created!');
     return movie;
   }
 
   @Emit()
   update(movie: Movie): Movie {
+    this.showSnackbar('Movie updated!');
     return movie;
   }
 
   @Emit()
   delete(movie: Movie): Movie {
+    this.showSnackbar('Movie deleted!');
     return movie;
   }
 
@@ -182,10 +185,14 @@ export default class MovieForm extends Vue {
         .post<Movie>('/api/movies', this.form)
         .then((res: AxiosResponse) => this.create(res.data))
         .catch((err: AxiosError) => {
-          if (err.response && err.response.status === 409) {
-            this.$refs.observer.setErrors({
-              code: 'The code already existed',
-            });
+          if (err.response) {
+            if (err.response.status === 409) {
+              this.$refs.observer.setErrors({
+                code: 'The code already existed',
+              });
+            } else {
+              this.showErrorSnackbar('Cannot create new movie', err);
+            }
           }
         })
         .finally(() => {
@@ -203,6 +210,7 @@ export default class MovieForm extends Vue {
       this.$axios
         .put<Movie>(`/api/movies/${this.edit.id}`, this.form)
         .then((res: AxiosResponse) => this.update(res.data))
+        .catch((e: AxiosError) => this.showErrorSnackbar('Movie update failed', e))
         .finally(() => {
           this.loading = false;
         });
@@ -212,6 +220,25 @@ export default class MovieForm extends Vue {
   private async isFormValid(): Promise<boolean> {
     await this.$refs.observer.validate();
     return Object.values(this.$refs.observer.fields).every((field) => field.valid);
+  }
+
+  private showErrorSnackbar(message: string, error?: AxiosError) {
+    if (error?.response) {
+      this.$store.commit('snackbar/showError', {
+        message,
+        code: error.response.status,
+      });
+    } else {
+      this.$store.commit('snackbar/showError', {
+        message,
+      });
+    }
+  }
+
+  private showSnackbar(message: string) {
+    this.$store.commit('snackbar/show', {
+      message,
+    });
   }
 }
 
