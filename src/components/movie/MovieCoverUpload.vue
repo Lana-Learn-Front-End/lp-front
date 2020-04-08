@@ -2,7 +2,7 @@
   <div class="img-container elevation-2">
     <v-img v-if="src" :src="src"></v-img>
 
-    <placeholder-image v-if="!src" :aspect-ratio="800/540"></placeholder-image>
+    <base-placeholder-image v-if="!src" :aspect-ratio="800/540"></base-placeholder-image>
 
     <div v-show="!img || loading" class="img-btn">
       <v-btn
@@ -60,10 +60,10 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import Movie from '@/models/movie';
 import { AxiosResponse } from 'axios';
 import { default as Cover } from '@/models/file';
-import PlaceholderImage from '@/components/PlaceholderImage.vue';
+import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
 
 @Component({
-  components: { PlaceholderImage },
+  components: { BasePlaceholderImage },
 })
 export default class MovieCoverUpload extends Vue {
   @Prop() movie!: Movie;

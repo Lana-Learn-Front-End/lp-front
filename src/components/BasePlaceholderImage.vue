@@ -13,7 +13,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
-export default class PlaceholderImage extends Vue {
+export default class BasePlaceholderImage extends Vue {
   @Prop({ type: String, default: 'insert_photo' }) icon!: string;
   @Prop() aspectRatio!: string | number;
 }
