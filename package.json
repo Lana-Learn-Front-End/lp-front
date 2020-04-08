@@ -13,15 +13,17 @@
     "vee-validate": "^3.2.5",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.2",
-    "vue-property-decorator": "^8.3.0",
+    "vue-property-decorator": "^8.4.1",
     "vue-router": "^3.1.5",
-    "vuetify": "^2.2.11",
-    "vuex": "^3.1.2"
+    "vuetify": "^2.2.21",
+    "vuex": "^3.1.2",
+    "vuex-class": "^0.3.2",
+    "vuex-module-decorators": "^0.16.1"
   },
   "devDependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@typescript-eslint/eslint-plugin": "^2.18.0",
-    "@typescript-eslint/parser": "^2.18.0",
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
     "@vue/cli-plugin-babel": "~4.2.0",
     "@vue/cli-plugin-eslint": "~4.2.0",
     "@vue/cli-plugin-router": "~4.2.0",

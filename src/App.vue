@@ -18,12 +18,16 @@
         <router-view></router-view>
       </v-container>
     </v-content>
+    <the-snackbar></the-snackbar>
   </v-app>
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import TheSnackbar from '@/components/TheSnackbar.vue';
 
-@Component
+@Component({
+  components: { TheSnackbar },
+})
 export default class App extends Vue {
   drawer = false;
 }
