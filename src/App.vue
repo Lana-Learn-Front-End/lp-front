@@ -9,7 +9,7 @@
     <app-nav-drawer v-model="drawer"></app-nav-drawer>
 
     <v-content>
-      <v-container fill-height class="pt-6 pt-md-8 pt-lg-10 align-start">
+      <v-container fill-height class="align-start">
         <v-row justify="center">
           <v-col lg="11" xl="10">
             <router-view></router-view>
