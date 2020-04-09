@@ -5,7 +5,7 @@
       <div class="d-flex align-center">
         <v-text-field
           single-line
-          v-model="filter"
+          v-model="search"
           append-icon="search"
           name="filter"
           placeholder="Filter tags"
@@ -44,13 +44,13 @@
           <v-progress-circular indeterminate></v-progress-circular>
         </div>
 
-        <div class="text-center" v-show="!loading && filteredTag.length  === 0">
+        <div class="text-center" v-show="!loading && filteredTags.length  === 0">
           <span class="body-1">No tags found</span>
         </div>
 
         <div>
           <v-chip
-            v-for="tag of filteredTag"
+            v-for="tag of filteredTags"
             v-bind:key="tag.name"
             class="my-1 mx-1 mx-md-2"
             @click.stop="openUpdateDialog(tag)"
@@ -99,7 +99,7 @@ export default class TagManage extends Vue {
   createDialog = false;
   updateDialog = false;
   updateDialogTag: Tag | null = null;
-  filter = '';
+  search = '';
 
   $refs!: {
     createForm: TagForm;
@@ -109,8 +109,8 @@ export default class TagManage extends Vue {
     this.fetchTags();
   }
 
-  get filteredTag(): Tag[] {
-    const filterReg = new RegExp(this.filter, 'i');
+  get filteredTags(): Tag[] {
+    const filterReg = new RegExp(this.search, 'i');
     return this.tags.filter(
       (tag: Tag) => filterReg.test(tag.name),
     );
