@@ -1,6 +1,13 @@
 <template>
   <v-card v-if="movie" class="w-100">
-    <v-card-title class="title">[{{movie.code}}] {{movie.name}}</v-card-title>
+    <v-card-title
+      :class="{
+        'title': $vuetify.breakpoint.mdAndUp,
+        'subtitle-1 font-weight-bold': $vuetify.breakpoint.smAndDown
+      }"
+    >
+      [{{movie.code}}] {{movie.name}}
+    </v-card-title>
     <v-divider></v-divider>
     <v-card-text>
       <v-row>
@@ -12,8 +19,11 @@
             :edit="movie"
             @update="fetchMovieOrTo404($event.id)"
             enable-delete
-            @delete="returnToManagePage()"
+            @delete="returnToPreviousRoute()"
           >
+            <template v-slot:actions>
+              <v-btn text @click="returnToPreviousRoute()">Back</v-btn>
+            </template>
           </movie-form>
         </v-col>
       </v-row>
@@ -52,8 +62,8 @@ export default class MovieEdit extends Vue {
     }
   }
 
-  returnToManagePage() {
-    this.$router.push({ name: 'MovieManage' });
+  returnToPreviousRoute() {
+    this.$router.back();
   }
 }
 </script>
