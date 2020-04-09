@@ -116,7 +116,6 @@ import Cast from '@/models/cast';
 import Tag from '@/models/tag';
 import { AxiosError, AxiosResponse } from 'axios';
 import Movie from '@/models/movie';
-import { capitalize } from '@/util/string-format';
 
 @Component
 export default class MovieForm extends Vue {
@@ -177,7 +176,7 @@ export default class MovieForm extends Vue {
 
   async onCreate() {
     if (await this.isFormValid()) {
-      this.form.name = capitalize(this.form.name);
+      this.form.name = this.$options.filters?.capitalize(this.form.name);
       this.form.code = uppercaseCode(this.form.code);
       this.loading = true;
 
@@ -203,7 +202,7 @@ export default class MovieForm extends Vue {
 
   async onUpdate() {
     if (this.edit && await this.isFormValid()) {
-      this.form.name = capitalize(this.form.name);
+      this.form.name = this.$options.filters?.capitalize(this.form.name);
       this.form.code = uppercaseCode(this.form.code);
 
       this.loading = true;

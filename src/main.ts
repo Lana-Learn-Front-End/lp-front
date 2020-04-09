@@ -9,6 +9,7 @@ import vuetify from './plugins/vuetify';
 import './plugins/axios/axios';
 import './plugins/vee-validate';
 import './plugins/class-component-hooks';
+import './core/filters';
 
 Vue.config.productionTip = false;
 

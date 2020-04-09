@@ -81,7 +81,6 @@
 import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator';
 import Tag from '@/models/tag';
 import { ValidationObserver } from 'vee-validate';
-import { capitalize } from '@/util/string-format';
 import { AxiosError, AxiosResponse } from 'axios';
 import Movie from '@/models/movie';
 
@@ -132,7 +131,7 @@ export default class TagForm extends Vue {
 
   async onCreate() {
     if (await this.isFormValid()) {
-      this.name = capitalize(this.name);
+      this.name = this.$options.filters?.capitalize(this.name);
       this.loading = true;
 
       this.$axios
@@ -155,7 +154,7 @@ export default class TagForm extends Vue {
 
   async onUpdate() {
     if (this.edit && await this.isFormValid()) {
-      this.name = capitalize(this.name);
+      this.name = this.$options.filters?.capitalize(this.name);
       this.loading = true;
 
       this.$axios
