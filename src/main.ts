@@ -6,7 +6,7 @@ import store from './store';
 import './styles.scss';
 
 import vuetify from './plugins/vuetify';
-import './plugins/axios';
+import './plugins/axios/axios';
 import './plugins/vee-validate';
 import './plugins/class-component-hooks';
 

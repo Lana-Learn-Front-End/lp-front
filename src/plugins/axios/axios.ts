@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Vue, { PluginObject } from 'vue';
 import axios from 'axios';
+import paginateResponseInterceptor from '@/plugins/axios/paginate-interceptor';
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
@@ -16,21 +17,14 @@ const config = {
 
 const axiosInstance = axios.create(config);
 
-axiosInstance.interceptors.request.use(
-  (cfg) => cfg,
-  (err) => Promise.reject(err),
-);
-
-axiosInstance.interceptors.response.use(
-  (res) => res,
-  (err) => Promise.reject(err),
-);
+axiosInstance.interceptors.response.use(paginateResponseInterceptor);
 
 const Plugin: PluginObject<any> = {
   install: (Vue) => {
     Vue.$axios = axiosInstance;
   },
 };
+
 Plugin.install = (Vue) => {
   Vue.$axios = axiosInstance;
   window.axios = axiosInstance;
