@@ -9,13 +9,9 @@
     <app-nav-drawer v-model="drawer"></app-nav-drawer>
 
     <v-content>
-      <v-container fill-height class="align-start">
-        <v-row justify="center">
-          <v-col lg="11" xl="10">
-            <router-view></router-view>
-          </v-col>
-        </v-row>
-      </v-container>
+      <base-content-wrapper>
+        <router-view></router-view>
+      </base-content-wrapper>
     </v-content>
     <the-snackbar></the-snackbar>
   </v-app>
@@ -24,9 +20,10 @@
 import { Component, Vue } from 'vue-property-decorator';
 import TheSnackbar from '@/components/TheSnackbar.vue';
 import AppNavDrawer from '@/components/AppNavDrawer.vue';
+import BaseContentWrapper from '@/components/BaseContentWrapper.vue';
 
 @Component({
-  components: { AppNavDrawer, TheSnackbar },
+  components: { BaseContentWrapper, AppNavDrawer, TheSnackbar },
 })
 export default class App extends Vue {
   drawer = false;

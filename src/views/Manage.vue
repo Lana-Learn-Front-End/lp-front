@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-100">
     <v-tabs show-arrows right>
       <v-tab to="/manage/movies">Movies</v-tab>
       <v-tab to="/manage/tags">Tags</v-tab>
