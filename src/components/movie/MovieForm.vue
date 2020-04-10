@@ -157,8 +157,12 @@ export default class MovieForm extends Vue {
   }
 
   @Watch('edit', { immediate: true })
-  movieChanged(movie: Movie) {
-    this.form = getFormDataFromMovie(movie);
+  movieChanged(movie?: Movie) {
+    if (movie) {
+      this.form = getFormDataFromMovie(movie);
+    } else {
+      this.form = getDefaultFormData();
+    }
   }
 
   @Emit()
