@@ -18,7 +18,7 @@
         <v-card>
           <v-card-title>New Movie</v-card-title>
           <v-card-text>
-            <movie-form @create="onCreated($event)">
+            <movie-form @create="onMovieCreated($event)">
               <template v-slot:actions>
                 <v-btn
                   text
@@ -51,10 +51,14 @@
           <span class="body-1">No movies found</span>
         </div>
 
+        <v-overlay :value="loading" absolute>
+          <v-progress-circular indeterminate></v-progress-circular>
+        </v-overlay>
+
         <v-row>
           <v-col
             v-for="movie of movies"
-            v-bind:key="movie.code"
+            :key="movie.id"
             cols="12"
             sm="6"
             md="4"
@@ -62,7 +66,7 @@
           >
             <v-card
               height="100%"
-              :to="{ name: 'MovieEdit', params: { id: movie.id } }"
+              @click.stop="openUpdateDialog(movie)"
             >
               <div>
                 <v-img v-if="movie.cover"></v-img>
@@ -78,6 +82,17 @@
                 </div>
               </v-card-title>
             </v-card>
+            <v-dialog v-model="updateDialog" fullscreen>
+              <template v-slot:default>
+                <movie-edit
+                  :movie="updateDialogMovie"
+                  @update="onMovieUpdate($event)"
+                  @delete="onMovieDelete()"
+                  @complete="closeUpdateDialog()"
+                >
+                </movie-edit>
+              </template>
+            </v-dialog>
           </v-col>
         </v-row>
       </div>
@@ -90,9 +105,6 @@
       >
       </v-pagination>
     </v-card-text>
-    <v-overlay :value="loading">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
   </v-card>
 </template>
 
@@ -104,44 +116,23 @@ import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
 import Page from '@/models/page';
 import { AxiosResponse } from 'axios';
 import MovieSortingDropdown from '@/components/movie/MovieSortingDropdown.vue';
+import MovieEdit from '@/components/movie/MovieEdit.vue';
 
 @Component({
-  components: { MovieSortingDropdown, BasePlaceholderImage, MovieForm },
+  components: { MovieEdit, MovieSortingDropdown, BasePlaceholderImage, MovieForm },
 })
 export default class MovieManage extends Vue {
   createDialog = false;
+  updateDialog = false;
+  updateDialogMovie: Movie | null = null;
   movies: Movie[] = [];
   loading = false;
   page = 1;
   totalPages = 1;
   sort = '';
 
-  onCreated(movie: Movie): void {
-    this.$router.push({ name: 'MovieEdit', params: { id: movie.id.toString() } });
-  }
-
   created() {
     this.fetchMovies();
-  }
-
-  fetchMovies() {
-    this.loading = true;
-    this.$axios
-      .get('/api/movies', {
-        params: {
-          page: this.page,
-          sort: this.sort,
-          size: 1,
-        },
-      })
-      .then((res: AxiosResponse<Page<Movie>>) => res.data)
-      .then((moviePage: Page<Movie>) => {
-        this.movies = moviePage.content;
-        this.totalPages = moviePage.totalPages;
-      })
-      .finally(() => {
-        this.loading = false;
-      });
   }
 
   @Watch('page')
@@ -152,6 +143,50 @@ export default class MovieManage extends Vue {
   @Watch('sort')
   sortChange() {
     this.fetchMovies();
+  }
+
+  onMovieUpdate(movie: Movie) {
+    Object.assign(this.updateDialogMovie, movie);
+  }
+
+  openUpdateDialog(movie: Movie) {
+    this.updateDialogMovie = movie;
+    this.updateDialog = true;
+  }
+
+  closeUpdateDialog() {
+    this.updateDialogMovie = null;
+    this.updateDialog = false;
+  }
+
+  async onMovieDelete() {
+    this.closeUpdateDialog();
+    await this.fetchMovies();
+  }
+
+  async onMovieCreated(movie: Movie) {
+    this.createDialog = false;
+    await this.fetchMovies();
+    this.openUpdateDialog(this.movies.find((m: Movie) => m.id === movie.id) || movie);
+  }
+
+  async fetchMovies(): Promise<void> {
+    this.loading = true;
+    await this.$axios
+      .get('/api/movies', {
+        params: {
+          page: this.page,
+          sort: this.sort,
+        },
+      })
+      .then((res: AxiosResponse<Page<Movie>>) => res.data)
+      .then((moviePage: Page<Movie>) => {
+        this.movies = moviePage.content;
+        this.totalPages = moviePage.totalPages;
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   }
 }
 </script>

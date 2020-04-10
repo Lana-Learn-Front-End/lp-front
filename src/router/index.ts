@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
-import MovieEdit from '@/views/movie/MovieEdit.vue';
 import TagManage from '@/views/TagManage.vue';
 import MovieManage from '@/views/movie/MovieManage.vue';
 import Manage from '@/views/Manage.vue';
@@ -39,11 +38,6 @@ const routes: RouteConfig[] = [
         component: CategoryManage,
       },
     ],
-  },
-  {
-    path: '/movies/:id/edit',
-    name: 'MovieEdit',
-    component: MovieEdit,
   },
 ];
 
