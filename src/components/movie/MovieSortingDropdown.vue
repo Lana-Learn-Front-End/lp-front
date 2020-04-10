@@ -33,7 +33,8 @@ export default class MovieSortingDropdown extends Vue {
   sorts: Sort[] = [
     { value: '', text: 'Default' },
     { value: 'name,asc', text: 'Name' },
-    { value: 'modifiedAt,asc', text: 'Latest' },
+    { value: 'modifiedAt,desc', text: 'Latest' },
+    { value: 'code,desc', text: 'Code' },
   ];
 
   get currentSort(): Sort {
