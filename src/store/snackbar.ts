@@ -31,12 +31,12 @@ export default class Snackbar extends VuexModule {
 
   @Mutation
   showError({
-    error,
+    message,
     code = '',
     timeout = 2000,
     closeable = true,
   }: ErrorSnackbarOptions) {
-    this.message = `${error} ${code !== undefined ? `(${code})` : ''}`;
+    this.message = `${message} ${code ? `(${code})` : ''}`;
     this.color = 'error';
     this.timeout = timeout;
     this.closeable = closeable;
@@ -52,8 +52,8 @@ export interface SnackbarOptions {
 }
 
 export interface ErrorSnackbarOptions {
+  message: string | number;
   code: string | number;
-  error: string;
   timeout: number;
   closeable: boolean;
 }
