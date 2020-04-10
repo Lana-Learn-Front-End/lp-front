@@ -1,5 +1,6 @@
 import Cast from '@/models/cast';
 import Tag from '@/models/tag';
+import Category from '@/models/category';
 
 export default interface Movie {
   id: number;
@@ -8,4 +9,5 @@ export default interface Movie {
   cover: string;
   casts: Cast[];
   tags: Tag[];
+  categories: Category[];
 }

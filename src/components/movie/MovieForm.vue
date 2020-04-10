@@ -38,9 +38,19 @@
     >
     </v-select>
     <v-select
-      label="Tag"
+      label="Tags"
       v-model="form.tags"
       :items="tags"
+      chips
+      item-text="name"
+      return-object
+      multiple
+    >
+    </v-select>
+    <v-select
+      label="Categories"
+      v-model="form.categories"
+      :items="categories"
       chips
       item-text="name"
       return-object
@@ -116,6 +126,7 @@ import Cast from '@/models/cast';
 import Tag from '@/models/tag';
 import { AxiosError, AxiosResponse } from 'axios';
 import Movie from '@/models/movie';
+import Category from '@/models/category';
 
 @Component
 export default class MovieForm extends Vue {
@@ -125,6 +136,7 @@ export default class MovieForm extends Vue {
   form!: MovieFormData;
   casts: Cast[] = [];
   tags: Tag[] = [];
+  categories: Category[] = [];
   loading = false;
   deleteDialog = false;
 
@@ -136,6 +148,12 @@ export default class MovieForm extends Vue {
     return {
       form: undefined,
     };
+  }
+
+  async created() {
+    this.casts = (await this.$axios.get<Cast[]>('/api/casts/all')).data;
+    this.tags = (await this.$axios.get<Tag[]>('/api/tags/all')).data;
+    this.categories = (await this.$axios.get<Tag[]>('/api/categories/all')).data;
   }
 
   @Watch('edit', { immediate: true })
@@ -159,11 +177,6 @@ export default class MovieForm extends Vue {
   delete(movie: Movie): Movie {
     this.showSnackbar('Movie deleted!');
     return movie;
-  }
-
-  async created() {
-    this.casts = (await this.$axios.get<Cast[]>('/api/casts/all')).data;
-    this.tags = (await this.$axios.get<Tag[]>('/api/tags/all')).data;
   }
 
   onDelete() {
@@ -239,6 +252,11 @@ export default class MovieForm extends Vue {
       message,
     });
   }
+
+  reset() {
+    this.$refs.observer.reset();
+    this.form = getDefaultFormData();
+  }
 }
 
 interface MovieFormData {
@@ -246,22 +264,26 @@ interface MovieFormData {
   name: string;
   tags: Tag[];
   casts: Cast[];
+  categories: Category[];
 }
 
-function getFormDataFromMovie(movie: Movie | undefined | null): MovieFormData {
-  if (movie) {
-    return {
-      code: movie.code,
-      name: movie.name,
-      tags: movie.tags,
-      casts: movie.casts,
-    };
-  }
+function getFormDataFromMovie(movie: Movie): MovieFormData {
+  return {
+    code: movie.code,
+    name: movie.name,
+    tags: movie.tags,
+    casts: movie.casts,
+    categories: movie.categories,
+  };
+}
+
+function getDefaultFormData(): MovieFormData {
   return {
     code: '',
     name: '',
     tags: [],
     casts: [],
+    categories: [],
   };
 }
 
