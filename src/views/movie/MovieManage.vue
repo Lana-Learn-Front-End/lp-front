@@ -1,6 +1,38 @@
 <template>
   <v-card>
-    <v-card-title>Movies Management</v-card-title>
+    <v-card-title class="d-flex justify-space-between">
+      <span>Movies Management</span>
+      <v-btn
+        text
+        class="ml-3 ml-sm-0"
+        @click.stop="createDialog = true"
+      >
+        <v-icon left>add</v-icon>
+        <span>New</span>
+      </v-btn>
+      <!-- create dialog-->
+      <v-dialog
+        v-model="createDialog"
+        max-width="500px"
+      >
+        <v-card>
+          <v-card-title>New Movie</v-card-title>
+          <v-card-text>
+            <movie-form @create="onCreated($event)">
+              <template v-slot:actions>
+                <v-btn
+                  text
+                  @click.stop="createDialog = false"
+                >
+                  Cancel
+                </v-btn>
+              </template>
+            </movie-form>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </v-card-title>
+
     <v-card-text>
       <div class="d-flex align-center">
         <v-text-field
@@ -10,53 +42,116 @@
           placeholder="Filter movies"
         >
         </v-text-field>
+        <MovieSortingDropdown class="ml-3" v-model="sort"></MovieSortingDropdown>
         <v-spacer class="d-none d-sm-block"></v-spacer>
-        <v-btn
-          text
-          class="ml-4 ml-sm-0"
-          @click.stop="createDialog = true"
-        >
-          <v-icon class="d-none d-sm-block">add</v-icon>
-          <span>New</span>
-        </v-btn>
-        <v-dialog
-          v-model="createDialog"
-          max-width="500px"
-        >
-          <v-card>
-            <v-card-title>New Movie</v-card-title>
-            <v-card-text>
-              <movie-form @create="onCreated($event)">
-                <template v-slot:actions>
-                  <v-btn
-                    text
-                    @click.stop="createDialog = false"
-                  >
-                    Cancel
-                  </v-btn>
-                </template>
-              </movie-form>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
       </div>
+
+      <div class="mt-5 mt-md-8">
+        <div class="text-center" v-show="!loading && movies.length  === 0">
+          <span class="body-1">No movies found</span>
+        </div>
+
+        <v-row>
+          <v-col
+            v-for="movie of movies"
+            v-bind:key="movie.code"
+            cols="12"
+            sm="6"
+            md="4"
+            lg="3"
+          >
+            <v-card
+              height="100%"
+              :to="{ name: 'MovieEdit', params: { id: movie.id } }"
+            >
+              <div>
+                <v-img v-if="movie.cover"></v-img>
+                <base-placeholder-image
+                  v-if="!movie.cover"
+                  :aspect-ratio="800/540"
+                >
+                </base-placeholder-image>
+              </div>
+              <v-card-title class="body-1">
+                <div>
+                  [{{ movie.code }}] {{ movie.name | truncate(120, true)}}
+                </div>
+              </v-card-title>
+            </v-card>
+          </v-col>
+        </v-row>
+      </div>
+
+      <v-pagination
+        class="mt-5"
+        v-model="page"
+        :total-visible="5"
+        :length="totalPages"
+      >
+      </v-pagination>
     </v-card-text>
+    <v-overlay :value="loading">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
   </v-card>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import MovieForm from '@/components/movie/MovieForm.vue';
 import Movie from '@/models/movie';
+import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
+import Page from '@/models/page';
+import { AxiosResponse } from 'axios';
+import MovieSortingDropdown from '@/components/movie/MovieSortingDropdown.vue';
 
 @Component({
-  components: { MovieForm },
+  components: { MovieSortingDropdown, BasePlaceholderImage, MovieForm },
 })
 export default class MovieManage extends Vue {
   createDialog = false;
+  movies: Movie[] = [];
+  loading = false;
+  page = 1;
+  totalPages = 1;
+  sort = '';
 
   onCreated(movie: Movie): void {
     this.$router.push({ name: 'MovieEdit', params: { id: movie.id.toString() } });
+  }
+
+  created() {
+    this.fetchMovies();
+  }
+
+  fetchMovies() {
+    this.loading = true;
+    this.$axios
+      .get('/api/movies', {
+        params: {
+          page: this.page,
+          sort: this.sort,
+          size: 1,
+        },
+      })
+      .then((res: AxiosResponse<Page<Movie>>) => res.data)
+      .then((moviePage: Page<Movie>) => {
+        this.movies = moviePage.content;
+        this.totalPages = moviePage.totalPages;
+      })
+      .finally(() => {
+        this.loading = false;
+      });
+  }
+
+  @Watch('page')
+  pageChange() {
+    this.fetchMovies();
+  }
+
+  @Watch('sort')
+  sortChange() {
+    this.fetchMovies();
   }
 }
 </script>
