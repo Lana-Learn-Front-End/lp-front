@@ -39,7 +39,7 @@
         fab
         small
         class="ml-2 error--text"
-        @click="setImgToDefault(movie)"
+        @click="img = undefined"
       >
         <v-icon>clear</v-icon>
       </v-btn>
@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
 import Movie from '@/models/movie';
 import { AxiosError, AxiosResponse } from 'axios';
 import { default as Cover } from '@/models/file';
@@ -69,7 +69,6 @@ export default class MovieCoverUpload extends Vue {
   @Prop() movie!: Movie;
   loading = false;
   img?: File;
-  src!: string;
 
   $refs!: {
     file: HTMLInputElement;
@@ -78,29 +77,29 @@ export default class MovieCoverUpload extends Vue {
   data() {
     return {
       img: undefined,
-      src: '',
     };
   }
 
-  @Watch('movie', { immediate: true })
-  onMovieChange(movie: Movie) {
-    this.setImgToDefault(movie);
+  get src(): string {
+    if (this.img) {
+      return URL.createObjectURL(this.img);
+    }
+    return this.movie?.cover
+      ? `http://localhost:8080/data/images/${this.movie.cover}`
+      : '';
+  }
+
+  @Emit()
+  imageChange(src: string): string {
+    this.img = undefined;
+    this.showSnackbar('Image changed successfully!');
+    return src;
   }
 
   onImgPicked(files: FileList) {
     if (files.length > 0) {
       [this.img] = files;
-      this.src = URL.createObjectURL(this.img);
     }
-  }
-
-  setImgToDefault(movie: Movie) {
-    if (movie.cover) {
-      this.src = `http://localhost:8080/data/images/${movie.cover}`;
-    } else {
-      this.src = '';
-    }
-    this.img = undefined;
   }
 
   async onUpload(): Promise<void> {
@@ -112,12 +111,10 @@ export default class MovieCoverUpload extends Vue {
         } else {
           await this.uploadImage(this.img);
         }
-        this.showSnackbar('Upload Success');
       } catch (e) {
         this.showErrorSnackbar('Upload Failed!', e);
       } finally {
         this.loading = false;
-        this.setImgToDefault(this.movie);
       }
     }
   }
@@ -125,14 +122,14 @@ export default class MovieCoverUpload extends Vue {
   async onRemove(): Promise<void> {
     this.loading = true;
     try {
+      const deleteUrl: string = this.src;
       await this.updateMovie('');
-      await this.$axios.delete(this.src);
-      this.showSnackbar('Remove Success!');
+      await this.$axios.delete(deleteUrl);
+      this.imageChange('');
     } catch (e) {
       this.showErrorSnackbar('Remove Failed!', e);
     } finally {
       this.loading = false;
-      this.setImgToDefault(this.movie);
     }
   }
 
@@ -147,6 +144,21 @@ export default class MovieCoverUpload extends Vue {
     await this.updateMovie(res.data.id);
   }
 
+  private async updateMovie(cover: string) {
+    try {
+      this.movie.cover = cover;
+      this.$axios.put(
+        `/api/movies/${this.movie.id}`,
+        this.movie,
+      );
+      this.imageChange(cover);
+    } catch (e) {
+      if (cover) {
+        this.$axios.delete(`/data/images/${cover}`);
+      }
+    }
+  }
+
   private async updateExistedImage(img: File): Promise<void> {
     const formData = new FormData();
     formData.append('file', img);
@@ -155,20 +167,7 @@ export default class MovieCoverUpload extends Vue {
         'Content-Type': 'multipart/form-data',
       },
     });
-  }
-
-  private async updateMovie(cover: string) {
-    try {
-      this.movie.cover = cover;
-      this.$axios.put(
-        `/api/movies/${this.movie.id}`,
-        this.movie,
-      );
-    } catch (e) {
-      if (cover) {
-        this.$axios.delete(`/data/images/${cover}`);
-      }
-    }
+    this.imageChange(this.movie.cover);
   }
 
   private showErrorSnackbar(message: string, error?: AxiosError) {
@@ -190,12 +189,12 @@ export default class MovieCoverUpload extends Vue {
     });
   }
 }
+
 </script>
 
 <style scoped>
   .img-container {
     width: 100%;
-    height: 100%;
     position: relative;
   }
 
