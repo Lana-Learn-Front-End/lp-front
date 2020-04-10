@@ -13,16 +13,20 @@
       <!-- create dialog-->
       <v-dialog
         v-model="createDialog"
+        @click:outside="closeCreateDialog()"
         max-width="500px"
       >
         <v-card>
           <v-card-title>New Movie</v-card-title>
           <v-card-text>
-            <movie-form @create="onMovieCreated($event)">
+            <movie-form
+              ref="createForm"
+              @create="onMovieCreated($event)"
+            >
               <template v-slot:actions>
                 <v-btn
                   text
-                  @click.stop="createDialog = false"
+                  @click.stop="closeCreateDialog()"
                 >
                   Cancel
                 </v-btn>
@@ -131,6 +135,10 @@ export default class MovieManage extends Vue {
   totalPages = 1;
   sort = '';
 
+  $refs!: {
+    createForm: MovieForm & { reset: () => void };
+  };
+
   created() {
     this.fetchMovies();
   }
@@ -149,6 +157,17 @@ export default class MovieManage extends Vue {
     Object.assign(this.updateDialogMovie, movie);
   }
 
+  async onMovieDelete() {
+    this.closeUpdateDialog();
+    await this.fetchMovies();
+  }
+
+  async onMovieCreated(movie: Movie) {
+    this.createDialog = false;
+    await this.fetchMovies();
+    this.openUpdateDialog(this.movies.find((m: Movie) => m.id === movie.id) || movie);
+  }
+
   openUpdateDialog(movie: Movie) {
     this.updateDialogMovie = movie;
     this.updateDialog = true;
@@ -159,15 +178,9 @@ export default class MovieManage extends Vue {
     this.updateDialog = false;
   }
 
-  async onMovieDelete() {
-    this.closeUpdateDialog();
-    await this.fetchMovies();
-  }
-
-  async onMovieCreated(movie: Movie) {
+  closeCreateDialog() {
     this.createDialog = false;
-    await this.fetchMovies();
-    this.openUpdateDialog(this.movies.find((m: Movie) => m.id === movie.id) || movie);
+    this.$refs.createForm.reset();
   }
 
   async fetchMovies(): Promise<void> {
