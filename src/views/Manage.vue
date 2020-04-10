@@ -1,12 +1,11 @@
 <template>
   <div>
-    <v-sheet class="d-flex pa-3">
-      <v-spacer></v-spacer>
-      <v-btn class="mx-1" to="/manage/movies" text link>Movies</v-btn>
-      <v-btn class="mx-1" to="/manage/tags" text link>Tags</v-btn>
-      <v-btn class="mx-1" to="/manage/categories" text link>Categories</v-btn>
-      <v-btn class="mx-1" to="/manage/casts" text link>Casts</v-btn>
-    </v-sheet>
+    <v-tabs show-arrows right>
+      <v-tab to="/manage/movies">Movies</v-tab>
+      <v-tab to="/manage/tags">Tags</v-tab>
+      <v-tab to="/manage/categories">Categories</v-tab>
+      <v-tab to="/manage/casts">Casts</v-tab>
+    </v-tabs>
     <v-sheet class="mt-3 mt-md-5">
       <router-view></router-view>
     </v-sheet>
