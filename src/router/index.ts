@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
-import TagManage from '@/views/TagManage.vue';
-import MovieManage from '@/views/movie/MovieManage.vue';
-import Manage from '@/views/Manage.vue';
-import CategoryManage from '@/views/CategoryManage.vue';
+import TagManage from '@/views/manage/TagManage.vue';
+import MovieManage from '@/views/manage/MovieManage.vue';
+import Manage from '@/views/manage/Manage.vue';
+import CategoryManage from '@/views/manage/CategoryManage.vue';
 
 Vue.use(VueRouter);
 
