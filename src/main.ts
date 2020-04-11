@@ -6,10 +6,12 @@ import store from './store';
 import './styles.scss';
 
 import vuetify from './plugins/vuetify';
-import './plugins/axios/axios';
-import './plugins/vee-validate';
-import './plugins/class-component-hooks';
 import './core/filters';
+import './plugins/class-component-hooks';
+import './plugins/vee-validate';
+import './plugins/event-bus';
+import './plugins/axios/axios';
+import './plugins/snackbar';
 
 Vue.config.productionTip = false;
 

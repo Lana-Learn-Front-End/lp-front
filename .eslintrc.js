@@ -14,6 +14,12 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-shadow': [
+      'error',
+      {
+        'allow': ['Vue'] //for Vue plugin development
+      }
+    ],
     'prefer-destructuring': 'warn',
     'no-param-reassign': 'off',
     'linebreak-style': 'off',
