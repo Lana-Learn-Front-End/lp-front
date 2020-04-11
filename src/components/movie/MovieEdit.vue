@@ -1,51 +1,49 @@
 <template>
-  <v-sheet class="bg-dark h-100">
-    <v-app-bar fixed>
-      <v-toolbar-title>Edit Movie</v-toolbar-title>
+  <v-card class="bg-dark">
+    <v-toolbar>
+      <v-toolbar-title>Edit movie</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click="onComplete()">
         <v-icon>clear</v-icon>
       </v-btn>
-    </v-app-bar>
-    <v-content>
-      <base-content-wrapper>
-        <v-card v-if="movie" class="w-100">
-          <v-card-title
-            :class="{
-              'title': $vuetify.breakpoint.mdAndUp,
-              'subtitle-1 font-weight-bold': $vuetify.breakpoint.smAndDown
-            }"
-          >
-            [{{movie.code}}] {{movie.name}}
-          </v-card-title>
-          <v-divider></v-divider>
-          <v-card-text>
-            <v-row>
-              <v-col cols="12" md="7" lg="6" class="px-3 px-md-5 px-lg-8">
-                <movie-cover-upload
-                  :movie="movie"
-                  @image-change="onImageChange($event)"
-                >
-                </movie-cover-upload>
-              </v-col>
-              <v-col>
-                <movie-form
-                  :edit="movie"
-                  @update="onUpdate($event)"
-                  @delete="onDelete()"
-                  enable-delete
-                >
-                  <template v-slot:actions>
-                    <v-btn class="mr-2" text @click="onComplete()">Done</v-btn>
-                  </template>
-                </movie-form>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </base-content-wrapper>
-    </v-content>
-  </v-sheet>
+    </v-toolbar>
+    <v-container class="mt-5">
+      <v-card v-if="movie" class="w-100">
+        <v-card-title
+          :class="{
+            'title': $vuetify.breakpoint.mdAndUp,
+            'subtitle-1 font-weight-bold': $vuetify.breakpoint.smAndDown
+          }"
+        >
+          [{{movie.code}}] {{movie.name}}
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" md="7" lg="6" class="px-3 px-md-5 px-lg-8">
+              <movie-cover-upload
+                :movie="movie"
+                @image-change="onImageChange($event)"
+              >
+              </movie-cover-upload>
+            </v-col>
+            <v-col>
+              <movie-form
+                :edit="movie"
+                @update="onUpdate($event)"
+                @delete="onDelete()"
+                enable-delete
+              >
+                <template v-slot:actions>
+                  <v-btn class="mr-2" text @click="onComplete()">Done</v-btn>
+                </template>
+              </movie-form>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-container>
+  </v-card>
 </template>
 
 <script lang="ts">
