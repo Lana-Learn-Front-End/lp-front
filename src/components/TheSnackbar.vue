@@ -1,16 +1,16 @@
 <template>
   <div>
     <v-snackbar
-      :timeout="timeout"
-      :color="color"
-      v-model="activeState"
+      :timeout="options.timeout"
+      :color="options.color"
+      v-model="active"
     >
-      {{ message }}
+      {{ options.message }}
       <v-btn
         dark
         text
-        v-show="closeable"
-        @click="activeState = false"
+        v-show="options.closeable"
+        @click="active = false"
       >
         Close
       </v-btn>
@@ -20,28 +20,23 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { namespace } from 'vuex-class';
-
-const snackbarModule = namespace('snackbar');
+import { SnackbarOptions } from '@/plugins/snackbar';
 
 @Component
 export default class TheSnackbar extends Vue {
-  @snackbarModule.State message!: string;
-  @snackbarModule.State color!: string;
-  @snackbarModule.State timeout!: string;
-  @snackbarModule.State active!: boolean;
-  @snackbarModule.State closeable!: boolean;
+  options: SnackbarOptions = {
+    color: '',
+    timeout: 0,
+    message: '',
+    closeable: false,
+  };
+  active = false;
 
-  @snackbarModule.Mutation hide!: () => void;
-
-  get activeState() {
-    return this.active;
-  }
-
-  set activeState(state: boolean) {
-    if (!state) {
-      this.hide();
-    }
+  beforeMount() {
+    this.$bus.$on('snackbar-show', (options: SnackbarOptions) => {
+      Object.assign(this.options, options);
+      this.active = true;
+    });
   }
 }
 </script>

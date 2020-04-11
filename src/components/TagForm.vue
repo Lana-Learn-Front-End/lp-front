@@ -174,19 +174,19 @@ export default class TagForm extends Vue {
 
   private showErrorSnackbar(message: string, error?: AxiosError) {
     if (error?.response) {
-      this.$store.commit('snackbar/showError', {
+      this.$snackbar.showError({
         message,
         code: error.response.status,
       });
     } else {
-      this.$store.commit('snackbar/showError', {
+      this.$snackbar.show({
         message,
       });
     }
   }
 
   private showSnackbar(message: string) {
-    this.$store.commit('snackbar/show', {
+    this.$snackbar.show({
       message,
     });
   }
