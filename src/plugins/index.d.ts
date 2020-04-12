@@ -3,12 +3,6 @@ import { SnackBar } from '@/plugins/snackbar';
 import { EventBus } from '@/plugins/event-bus';
 import { NotifyModal } from '@/plugins/notify-modal';
 
-declare global {
-  interface Window {
-    axios: AxiosInstance;
-  }
-}
-
 declare module 'vue/types/vue' {
 
   interface Vue {

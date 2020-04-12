@@ -27,7 +27,6 @@ const Plugin: PluginObject<any> = {
 
 Plugin.install = (Vue) => {
   Vue.$axios = axiosInstance;
-  window.axios = axiosInstance;
   Object.defineProperties(Vue.prototype, {
     $axios: {
       get() {
