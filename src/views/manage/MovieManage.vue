@@ -74,7 +74,11 @@
               @click.stop="openUpdateDialog(movie)"
             >
               <div>
-                <v-img v-if="movie.cover"></v-img>
+                <v-img
+                  v-if="movie.cover"
+                  :src="movie.cover | mediaSource('images')"
+                >
+                </v-img>
                 <base-placeholder-image
                   v-if="!movie.cover"
                   :aspect-ratio="800/540"

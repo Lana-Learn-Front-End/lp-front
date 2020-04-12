@@ -1,6 +1,6 @@
 <template>
   <div class="img-container elevation-2">
-    <v-img v-if="src" :src="src"></v-img>
+    <v-img v-if="src" :src="src | mediaSource('images')"></v-img>
 
     <base-placeholder-image v-if="!src" :aspect-ratio="800/540"></base-placeholder-image>
 
@@ -84,9 +84,7 @@ export default class MovieCoverUpload extends Vue {
     if (this.img) {
       return URL.createObjectURL(this.img);
     }
-    return this.movie?.cover
-      ? `http://localhost:8080/data/images/${this.movie.cover}`
-      : '';
+    return this.movie?.cover || '';
   }
 
   @Emit()

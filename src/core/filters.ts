@@ -18,3 +18,10 @@ Vue.filter('truncate', (value: string, maxLength: number, ellipsis?: boolean) =>
   maxLength -= 3;
   return `${value.substr(0, maxLength)}...`;
 });
+
+Vue.filter('mediaSource', (value: string, ...paths: string[]) => {
+  if (value.startsWith('blob:')) {
+    return value;
+  }
+  return `${process.env.VUE_APP_BASE_URL}/data/${paths.join('/')}/${value}`;
+});
