@@ -51,10 +51,9 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
 import Movie from '@/models/movie';
 import MovieCoverUpload from '@/components/movie/MovieCoverUpload.vue';
 import MovieForm from '@/components/movie/MovieForm.vue';
-import BaseContentWrapper from '@/components/BaseContentWrapper.vue';
 
 @Component({
-  components: { BaseContentWrapper, MovieCoverUpload, MovieForm },
+  components: { MovieCoverUpload, MovieForm },
 })
 export default class MovieEdit extends Vue {
   @Prop() movie!: Movie;

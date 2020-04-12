@@ -9,9 +9,13 @@
     <app-nav-drawer v-model="drawer"></app-nav-drawer>
 
     <v-content>
-      <base-content-wrapper>
-        <router-view></router-view>
-      </base-content-wrapper>
+      <v-container fill-height class="align-start">
+        <v-row justify="center">
+          <v-col lg="11" xl="10">
+            <router-view></router-view>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-content>
     <the-snackbar></the-snackbar>
     <the-notify-modal></the-notify-modal>
@@ -21,11 +25,10 @@
 import { Component, Vue } from 'vue-property-decorator';
 import TheSnackbar from '@/components/notify/TheSnackbar.vue';
 import AppNavDrawer from '@/components/AppNavDrawer.vue';
-import BaseContentWrapper from '@/components/BaseContentWrapper.vue';
 import TheNotifyModal from '@/components/notify/TheNotifyModal.vue';
 
 @Component({
-  components: { TheNotifyModal, BaseContentWrapper, AppNavDrawer, TheSnackbar },
+  components: { TheNotifyModal, AppNavDrawer, TheSnackbar },
 })
 export default class App extends Vue {
   drawer = false;
