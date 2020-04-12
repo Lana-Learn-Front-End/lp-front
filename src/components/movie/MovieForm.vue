@@ -221,7 +221,7 @@ export default class MovieForm extends Vue {
         code: error.response.status,
       });
     } else {
-      this.$snackbar.show({
+      this.$snackbar.showError({
         message,
       });
     }

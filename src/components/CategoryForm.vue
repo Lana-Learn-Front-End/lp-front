@@ -152,7 +152,7 @@ export default class CategoryForm extends Vue {
         code: error.response.status,
       });
     } else {
-      this.$snackbar.show({
+      this.$snackbar.showError({
         message,
       });
     }
