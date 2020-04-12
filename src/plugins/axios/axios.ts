@@ -7,10 +7,8 @@ import paginateResponseInterceptor from '@/plugins/axios/paginate-interceptor';
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-
 const config = {
-  baseURL: 'http://localhost:8080',
-  // baseURL: process.env.baseURL || process.env.apiUrl || ""
+  baseURL: process.env.VUE_APP_BASE_URL || process.env.BASE_URL || '',
   // timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
 };
