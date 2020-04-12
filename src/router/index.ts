@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
 import TagManage from '@/views/manage/TagManage.vue';
 import MovieManage from '@/views/manage/MovieManage.vue';
-import Manage from '@/views/manage/Manage.vue';
+import ContentManage from '@/views/manage/ContentManager.vue';
 import CategoryManage from '@/views/manage/CategoryManage.vue';
 
 Vue.use(VueRouter);
@@ -15,8 +15,8 @@ const routes: RouteConfig[] = [
   },
   {
     path: '/manage',
-    name: 'Manage',
-    component: Manage,
+    name: 'ContentManage',
+    component: ContentManage,
     children: [
       {
         path: '/',

@@ -16,6 +16,6 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-export default class Manage extends Vue {
+export default class ContentManage extends Vue {
 }
 </script>
