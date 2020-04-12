@@ -10,6 +10,7 @@
         name="code"
         v-model="form.code"
         :error-messages="errors"
+        autofocus
       >
       </v-text-field>
     </validation-provider>

@@ -13,9 +13,10 @@
         </v-text-field>
         <v-spacer class="d-none d-sm-block"></v-spacer>
         <v-dialog
-          @click:outside="closeCreateDialog()"
           max-width="300px"
           v-model="createDialog"
+          retain-focus
+          @click:outside="closeCreateDialog()"
         >
           <template v-slot:activator="{ on }">
             <v-btn text class="ml-4 ml-sm-0" v-on="on">
@@ -36,7 +37,6 @@
               </v-card-text>
             </v-card>
           </template>
-
         </v-dialog>
       </div>
       <div class="mt-5 mt-md-8">
@@ -60,9 +60,11 @@
           </v-chip>
 
           <v-dialog
+            retain-focus
             v-model="updateDialog"
             max-width="300px"
-            @click:outside="closeUpdateDialog()">
+            @click:outside="closeUpdateDialog()"
+          >
             <template v-slot:default>
               <v-card>
                 <v-card-title>Update tag</v-card-title>

@@ -13,8 +13,9 @@
       <!-- create dialog-->
       <v-dialog
         v-model="createDialog"
-        @click:outside="closeCreateDialog()"
         max-width="500px"
+        retain-focus
+        @click:outside="closeCreateDialog()"
       >
         <v-card>
           <v-card-title>New Movie</v-card-title>
@@ -86,7 +87,10 @@
                 </div>
               </v-card-title>
             </v-card>
-            <v-dialog v-model="updateDialog" fullscreen>
+            <v-dialog
+              v-model="updateDialog"
+              fullscreen
+            >
               <template v-slot:default>
                 <movie-edit
                   :movie="updateDialogMovie"

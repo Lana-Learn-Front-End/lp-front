@@ -4,13 +4,13 @@
       v-slot="{ errors }"
       name="name"
       rules="required"
-      autofocus
     >
       <v-text-field
         label="Name"
         name="name"
         v-model="name"
         :error-messages="errors"
+        autofocus
       >
       </v-text-field>
     </validation-provider>
