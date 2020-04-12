@@ -1,6 +1,6 @@
 <template>
   <div class="img-container elevation-2">
-    <v-img v-if="src" :src="src | mediaSource('images')"></v-img>
+    <v-img v-if="src" :src="src"></v-img>
 
     <base-placeholder-image v-if="!src" :aspect-ratio="800/540"></base-placeholder-image>
 
@@ -86,7 +86,7 @@ export default class MovieCoverUpload extends mixins(NotifySnackbarMixin) {
     if (this.img) {
       return URL.createObjectURL(this.img);
     }
-    return this.movie?.cover || '';
+    return this.$options.filters?.mediaSource(this.movie?.cover, 'images') || '';
   }
 
   @Emit()
@@ -147,14 +147,15 @@ export default class MovieCoverUpload extends mixins(NotifySnackbarMixin) {
   private async updateMovie(cover: string) {
     try {
       this.movie.cover = cover;
-      this.$axios.put(
+      await this.$axios.put(
         `/api/movies/${this.movie.id}`,
         this.movie,
       );
       this.imageChange(cover);
     } catch (e) {
-      if (cover) {
-        this.$axios.delete(`/data/images/${cover}`);
+      if (cover && this.$options.filters?.mediaSource) {
+        await this.$axios.delete(this.$options.filters?.mediaSource(cover, 'images'));
+        this.showErrorSnackbar('Upload Failed!', e.response?.status);
       }
     }
   }
