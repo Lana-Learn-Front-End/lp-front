@@ -209,7 +209,10 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
 
       this.loading = true;
       await this.$axios
-        .put<Movie>(`/api/movies/${this.edit.id}`, this.form)
+        .put<Movie>(`/api/movies/${this.edit.id}`, {
+          ...this.edit,
+          ...this.form,
+        })
         .then((res: AxiosResponse) => this.update(res.data))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Movie update failed', e.response?.status);
