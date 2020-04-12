@@ -163,7 +163,7 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
       return;
     }
     if (this.edit) {
-      this.$axios
+      await this.$axios
         .delete(`/api/movies/${this.edit.id}`)
         .then(() => this.delete(this.edit as Movie));
     }
@@ -175,7 +175,7 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
       this.form.code = uppercaseCode(this.form.code);
       this.loading = true;
 
-      this.$axios
+      await this.$axios
         .post<Movie>('/api/movies', this.form)
         .then((res: AxiosResponse) => this.create(res.data))
         .catch((e: AxiosError) => {
@@ -201,7 +201,7 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
       this.form.code = uppercaseCode(this.form.code);
 
       this.loading = true;
-      this.$axios
+      await this.$axios
         .put<Movie>(`/api/movies/${this.edit.id}`, this.form)
         .then((res: AxiosResponse) => this.update(res.data))
         .catch((e: AxiosError) => {

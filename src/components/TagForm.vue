@@ -98,7 +98,7 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
       return;
     }
     if (this.edit) {
-      this.$axios
+      await this.$axios
         .delete(`/api/tags/${this.edit.id}`)
         .then(() => this.delete(this.edit as Movie));
     }
@@ -109,7 +109,7 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
       this.name = this.$options.filters?.capitalize(this.name);
       this.loading = true;
 
-      this.$axios
+      await this.$axios
         .post<Tag>('/api/tags', { name: this.name })
         .then((res: AxiosResponse<Tag>) => this.create(res.data))
         .catch((e: AxiosError) => {
@@ -132,7 +132,7 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
       this.name = this.$options.filters?.capitalize(this.name);
       this.loading = true;
 
-      this.$axios
+      await this.$axios
         .put<Tag>(`/api/tags/${this.edit.id}`, { name: this.name })
         .then((res: AxiosResponse<Tag>) => this.update(res.data))
         .catch((e: AxiosError) => {
