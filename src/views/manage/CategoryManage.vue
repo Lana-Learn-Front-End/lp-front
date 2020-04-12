@@ -105,7 +105,7 @@ export default class CategoryManage extends Vue {
   search = '';
 
   $refs!: {
-    createForm: CategoryForm;
+    createForm: CategoryForm & { reset(): void };
   };
 
   created() {
@@ -142,7 +142,7 @@ export default class CategoryManage extends Vue {
 
   closeCreateDialog() {
     this.createDialog = false;
-    (this.$refs.createForm as any).reset();
+    this.$refs.createForm.reset();
   }
 
   private fetchCategories() {

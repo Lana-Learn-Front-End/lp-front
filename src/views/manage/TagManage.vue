@@ -104,7 +104,7 @@ export default class TagManage extends Vue {
   search = '';
 
   $refs!: {
-    createForm: TagForm;
+    createForm: TagForm & { reset(): void };
   };
 
   created() {
@@ -141,7 +141,7 @@ export default class TagManage extends Vue {
 
   closeCreateDialog() {
     this.createDialog = false;
-    (this.$refs.createForm as any).reset();
+    this.$refs.createForm.reset();
   }
 
   private fetchTags() {

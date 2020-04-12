@@ -144,7 +144,7 @@ export default class MovieManage extends Vue {
   sort = '';
 
   $refs!: {
-    createForm: MovieForm & { reset: () => void };
+    createForm: MovieForm & { reset(): void };
   };
 
   created() {
