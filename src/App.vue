@@ -19,10 +19,10 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import TheSnackbar from '@/components/TheSnackbar.vue';
+import TheSnackbar from '@/components/notify/TheSnackbar.vue';
 import AppNavDrawer from '@/components/AppNavDrawer.vue';
 import BaseContentWrapper from '@/components/BaseContentWrapper.vue';
-import TheNotifyModal from '@/components/TheNotifyModal.vue';
+import TheNotifyModal from '@/components/notify/TheNotifyModal.vue';
 
 @Component({
   components: { TheNotifyModal, BaseContentWrapper, AppNavDrawer, TheSnackbar },

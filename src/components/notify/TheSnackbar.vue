@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { SnackbarOptions } from '@/plugins/snackbar';
+import { SnackbarOptions } from '@/plugins/notify/snackbar';
 
 @Component
 export default class TheSnackbar extends Vue {
