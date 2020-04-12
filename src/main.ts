@@ -12,6 +12,7 @@ import './plugins/vee-validate';
 import './plugins/event-bus';
 import './plugins/axios/axios';
 import './plugins/snackbar';
+import './plugins/notify-modal';
 
 Vue.config.productionTip = false;
 
