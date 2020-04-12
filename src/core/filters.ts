@@ -20,6 +20,9 @@ Vue.filter('truncate', (value: string, maxLength: number, ellipsis?: boolean) =>
 });
 
 Vue.filter('mediaSource', (value: string, ...paths: string[]) => {
+  if (!value) {
+    return '';
+  }
   if (value.startsWith('blob:')) {
     return value;
   }
