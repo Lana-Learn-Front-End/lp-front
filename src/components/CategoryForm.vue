@@ -53,7 +53,6 @@ import { Component, Emit, Prop, Watch } from 'vue-property-decorator';
 import Category from '@/models/category';
 import { ValidationObserver } from 'vee-validate';
 import { AxiosError, AxiosResponse } from 'axios';
-import Movie from '@/models/movie';
 import { mixins } from 'vue-class-component';
 import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
 
@@ -100,7 +99,13 @@ export default class CategoryForm extends mixins(NotifySnackbarMixin) {
     if (this.edit) {
       await this.$axios
         .delete(`/api/categories/${this.edit.id}`)
-        .then(() => this.delete(this.edit as Movie));
+        .then(() => this.delete(this.edit as Category))
+        .catch((e: AxiosError) => {
+          this.showErrorSnackbar('Category delete failed', e.response?.status);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     }
   }
 

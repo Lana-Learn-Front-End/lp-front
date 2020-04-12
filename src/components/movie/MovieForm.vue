@@ -163,9 +163,16 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
       return;
     }
     if (this.edit) {
+      this.loading = true;
       await this.$axios
         .delete(`/api/movies/${this.edit.id}`)
-        .then(() => this.delete(this.edit as Movie));
+        .then(() => this.delete(this.edit as Movie))
+        .catch((e: AxiosError) => {
+          this.showErrorSnackbar('Movie delete failed', e.response?.status);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     }
   }
 

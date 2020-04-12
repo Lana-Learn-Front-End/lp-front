@@ -53,7 +53,6 @@ import { Component, Emit, Prop, Watch } from 'vue-property-decorator';
 import Tag from '@/models/tag';
 import { ValidationObserver } from 'vee-validate';
 import { AxiosError, AxiosResponse } from 'axios';
-import Movie from '@/models/movie';
 import { mixins } from 'vue-class-component';
 import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
 
@@ -98,9 +97,16 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
       return;
     }
     if (this.edit) {
+      this.loading = true;
       await this.$axios
         .delete(`/api/tags/${this.edit.id}`)
-        .then(() => this.delete(this.edit as Movie));
+        .then(() => this.delete(this.edit as Tag))
+        .catch((e: AxiosError) => {
+          this.showErrorSnackbar('Tag delete failed', e.response?.status);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     }
   }
 
