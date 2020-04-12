@@ -20,41 +20,12 @@
         text
         class="error--text"
         v-if="edit && enableDelete"
-        @click.stop="deleteDialog = true"
+        @click.stop="onDelete()"
         :disabled="loading"
         :loading="loading"
       >
         Delete
       </v-btn>
-      <v-dialog
-        v-model="deleteDialog"
-        max-width="300px"
-        persistent
-      >
-        <template v-slot:default>
-          <v-card>
-            <v-card-title>
-              Are you sure
-            </v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                text
-                @click.stop="deleteDialog = false"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                text
-                class="error--text"
-                @click="onDelete()"
-              >
-                Delete
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </template>
-      </v-dialog>
       <v-btn
         text
         v-if="edit"
@@ -90,7 +61,6 @@ export default class CategoryForm extends Vue {
   @Prop({ type: Boolean }) enableDelete!: boolean;
   loading = false;
   name = '';
-  deleteDialog = false;
 
   $refs!: {
     observer: InstanceType<typeof ValidationObserver>;
@@ -121,7 +91,10 @@ export default class CategoryForm extends Vue {
     return category;
   }
 
-  onDelete() {
+  async onDelete() {
+    if (!await this.$modal.confirm('Are you sure?')) {
+      return;
+    }
     if (this.edit) {
       this.$axios
         .delete(`/api/categories/${this.edit.id}`)

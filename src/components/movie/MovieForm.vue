@@ -64,39 +64,12 @@
         text
         class="error--text"
         v-if="edit && enableDelete"
-        @click.stop="deleteDialog = true"
+        @click="onDelete()"
         :disabled="loading"
         :loading="loading"
       >
         Delete
       </v-btn>
-      <v-dialog
-        v-model="deleteDialog"
-        max-width="300px"
-        persistent
-      >
-        <template v-slot:default>
-          <v-card>
-            <v-card-title>Are you sure?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                text
-                @click.stop="deleteDialog = false"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                text
-                @click="onDelete()"
-                class="error--text"
-              >
-                Delete
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </template>
-      </v-dialog>
       <v-btn
         text
         v-if="edit"
@@ -138,7 +111,6 @@ export default class MovieForm extends Vue {
   tags: Tag[] = [];
   categories: Category[] = [];
   loading = false;
-  deleteDialog = false;
 
   $refs!: {
     observer: InstanceType<typeof ValidationObserver>;
@@ -183,7 +155,10 @@ export default class MovieForm extends Vue {
     return movie;
   }
 
-  onDelete() {
+  async onDelete() {
+    if (!await this.$modal.confirm('Are you sure?')) {
+      return;
+    }
     if (this.edit) {
       this.$axios
         .delete(`/api/movies/${this.edit.id}`)
