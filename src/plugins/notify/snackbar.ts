@@ -11,8 +11,6 @@ const SnackbarPlugin: PluginObject<SnackBarPluginOptions> = {
 
     Vue.prototype.$snackbar = {
       show: (options: SnackbarOptions) => {
-        console.log(Vue.prototype);
-        console.log(Vue.prototype);
         Vue.prototype.$bus.$emit('snackbar-show', { ...defaultOptions, ...options });
       },
       showError: (options: ErrorSnackbarOptions) => {
