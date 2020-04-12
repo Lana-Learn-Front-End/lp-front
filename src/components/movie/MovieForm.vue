@@ -94,16 +94,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator';
 import { ValidationObserver } from 'vee-validate';
 import Cast from '@/models/cast';
 import Tag from '@/models/tag';
 import { AxiosError, AxiosResponse } from 'axios';
 import Movie from '@/models/movie';
 import Category from '@/models/category';
+import { mixins } from 'vue-class-component';
+import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
 
 @Component
-export default class MovieForm extends Vue {
+export default class MovieForm extends mixins(NotifySnackbarMixin) {
   @Prop() edit?: Movie;
   @Prop({ type: Boolean }) enableDelete!: boolean;
 
@@ -176,14 +178,14 @@ export default class MovieForm extends Vue {
       this.$axios
         .post<Movie>('/api/movies', this.form)
         .then((res: AxiosResponse) => this.create(res.data))
-        .catch((err: AxiosError) => {
-          if (err.response) {
-            if (err.response.status === 409) {
+        .catch((e: AxiosError) => {
+          if (e.response) {
+            if (e.response.status === 409) {
               this.$refs.observer.setErrors({
                 code: 'The code already existed',
               });
             } else {
-              this.showErrorSnackbar('Cannot create new movie', err);
+              this.showErrorSnackbar('Cannot create new movie', e.response?.status);
             }
           }
         })
@@ -202,7 +204,9 @@ export default class MovieForm extends Vue {
       this.$axios
         .put<Movie>(`/api/movies/${this.edit.id}`, this.form)
         .then((res: AxiosResponse) => this.update(res.data))
-        .catch((e: AxiosError) => this.showErrorSnackbar('Movie update failed', e))
+        .catch((e: AxiosError) => {
+          this.showErrorSnackbar('Movie update failed', e.response?.status);
+        })
         .finally(() => {
           this.loading = false;
         });
@@ -212,25 +216,6 @@ export default class MovieForm extends Vue {
   private async isFormValid(): Promise<boolean> {
     await this.$refs.observer.validate();
     return Object.values(this.$refs.observer.fields).every((field) => field.valid);
-  }
-
-  private showErrorSnackbar(message: string, error?: AxiosError) {
-    if (error?.response) {
-      this.$snackbar.showError({
-        message,
-        code: error.response.status,
-      });
-    } else {
-      this.$snackbar.showError({
-        message,
-      });
-    }
-  }
-
-  private showSnackbar(message: string) {
-    this.$snackbar.show({
-      message,
-    });
   }
 
   reset() {

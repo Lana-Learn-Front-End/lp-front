@@ -49,14 +49,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator';
 import Category from '@/models/category';
 import { ValidationObserver } from 'vee-validate';
 import { AxiosError, AxiosResponse } from 'axios';
 import Movie from '@/models/movie';
+import { mixins } from 'vue-class-component';
+import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
 
 @Component
-export default class CategoryForm extends Vue {
+export default class CategoryForm extends mixins(NotifySnackbarMixin) {
   @Prop() edit?: Category;
   @Prop({ type: Boolean }) enableDelete!: boolean;
   loading = false;
@@ -116,7 +118,7 @@ export default class CategoryForm extends Vue {
               name: 'The name already existed',
             });
           } else {
-            this.showErrorSnackbar('Category create failed!', e);
+            this.showErrorSnackbar('Category create failed!', e.response?.status);
           }
         })
         .finally(() => {
@@ -133,7 +135,9 @@ export default class CategoryForm extends Vue {
       this.$axios
         .put<Category>(`/api/categories/${this.edit.id}`, { name: this.name })
         .then((res: AxiosResponse<Category>) => this.update(res.data))
-        .catch((e: AxiosError) => this.showErrorSnackbar('Category update failed!', e))
+        .catch((e: AxiosError) => {
+          this.showErrorSnackbar('Category update failed!', e.response?.status);
+        })
         .finally(() => {
           this.loading = false;
         });
@@ -143,25 +147,6 @@ export default class CategoryForm extends Vue {
   private async isFormValid(): Promise<boolean> {
     await this.$refs.observer.validate();
     return Object.values(this.$refs.observer.fields).every((field) => field.valid);
-  }
-
-  private showErrorSnackbar(message: string, error?: AxiosError) {
-    if (error?.response) {
-      this.$snackbar.showError({
-        message,
-        code: error.response.status,
-      });
-    } else {
-      this.$snackbar.showError({
-        message,
-      });
-    }
-  }
-
-  private showSnackbar(message: string) {
-    this.$snackbar.show({
-      message,
-    });
   }
 
   reset() {

@@ -56,16 +56,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
+import { Component, Emit, Prop } from 'vue-property-decorator';
 import Movie from '@/models/movie';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { default as Cover } from '@/models/file';
 import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
+import { mixins } from 'vue-class-component';
+import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
 
 @Component({
   components: { BasePlaceholderImage },
 })
-export default class MovieCoverUpload extends Vue {
+export default class MovieCoverUpload extends mixins(NotifySnackbarMixin) {
   @Prop() movie!: Movie;
   loading = false;
   img?: File;
@@ -110,7 +112,7 @@ export default class MovieCoverUpload extends Vue {
           await this.uploadImage(this.img);
         }
       } catch (e) {
-        this.showErrorSnackbar('Upload Failed!', e);
+        this.showErrorSnackbar('Upload Failed!', e.response?.status);
       } finally {
         this.loading = false;
       }
@@ -125,7 +127,7 @@ export default class MovieCoverUpload extends Vue {
       await this.$axios.delete(deleteUrl);
       this.imageChange('');
     } catch (e) {
-      this.showErrorSnackbar('Remove Failed!', e);
+      this.showErrorSnackbar('Remove Failed!', e.response?.status);
     } finally {
       this.loading = false;
     }
@@ -166,25 +168,6 @@ export default class MovieCoverUpload extends Vue {
       },
     });
     this.imageChange(this.movie.cover);
-  }
-
-  private showErrorSnackbar(message: string, error?: AxiosError) {
-    if (error?.response) {
-      this.$snackbar.showError({
-        message,
-        code: error.response.status,
-      });
-    } else {
-      this.$snackbar.showError({
-        message,
-      });
-    }
-  }
-
-  private showSnackbar(message: string) {
-    this.$snackbar.show({
-      message,
-    });
   }
 }
 
