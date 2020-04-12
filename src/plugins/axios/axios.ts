@@ -2,6 +2,10 @@
 import Vue, { PluginObject } from 'vue';
 import axios from 'axios';
 import paginateResponseInterceptor from '@/plugins/axios/paginate-interceptor';
+import {
+  debugRequestInterceptor,
+  debugResponseInterceptor,
+} from '@/plugins/axios/debug-interceptor';
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
@@ -16,6 +20,11 @@ const config = {
 const axiosInstance = axios.create(config);
 
 axiosInstance.interceptors.response.use(paginateResponseInterceptor);
+
+if (process.env.NODE_ENV === 'development') {
+  axiosInstance.interceptors.response.use(debugResponseInterceptor);
+  axiosInstance.interceptors.request.use(debugRequestInterceptor);
+}
 
 const Plugin: PluginObject<any> = {
   install: (Vue) => {
