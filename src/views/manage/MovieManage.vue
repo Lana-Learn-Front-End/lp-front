@@ -77,6 +77,7 @@
                 <v-img
                   v-if="movie.cover"
                   :src="movie.cover | mediaSource('images')"
+                  :aspect-ratio="800/540"
                 >
                 </v-img>
                 <base-placeholder-image

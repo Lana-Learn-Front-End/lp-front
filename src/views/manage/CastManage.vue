@@ -75,6 +75,7 @@
                 <v-img
                   v-if="cast.image"
                   :src="cast.image | mediaSource('images')"
+                  :aspect-ratio="1"
                 >
                 </v-img>
                 <base-placeholder-image
