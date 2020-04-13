@@ -1,19 +1,20 @@
 <template>
   <div class="img-container elevation-2">
     <v-img
-      v-if="src"
+      v-if="src && !loading"
       :src="src"
       :aspect-ratio="aspectRatio"
     >
     </v-img>
 
     <base-placeholder-image
-      v-if="!src"
+      v-if="!src || loading"
       :aspect-ratio="aspectRatio"
+      :loading="loading"
     >
     </base-placeholder-image>
 
-    <div v-show="!picked || loading" class="img-btn">
+    <div v-show="!img || loading" class="img-btn">
       <v-btn
         fab
         small
@@ -37,7 +38,7 @@
       </v-btn>
     </div>
 
-    <div v-show="picked && !loading" class="img-btn">
+    <div v-show="img && !loading" class="img-btn">
       <v-btn
         fab
         small
@@ -49,7 +50,7 @@
         fab
         small
         class="ml-2 error--text"
-        @click="clearPickedImage()"
+        @click="img = undefined"
       >
         <v-icon>clear</v-icon>
       </v-btn>
@@ -78,7 +79,6 @@ export default class BaseImagePicker extends Vue {
   @Prop() aspectRatio!: number | string;
 
   img?: File;
-  picked = false;
 
   $refs!: {
     file: HTMLInputElement;
@@ -99,25 +99,20 @@ export default class BaseImagePicker extends Vue {
 
   onImgPicked(files: FileList) {
     if (files.length > 0) {
-      this.picked = true;
       [this.img] = files;
     }
   }
 
-  clearPickedImage() {
-    this.img = undefined;
-    this.picked = false;
-  }
-
   @Emit()
   upload(): File | undefined {
-    this.picked = false;
-    return this.img;
+    const blob: File | undefined = this.img;
+    this.img = undefined;
+    return blob;
   }
 
   @Emit()
   remove() {
-    this.picked = false;
+    this.img = undefined;
   }
 }
 </script>
