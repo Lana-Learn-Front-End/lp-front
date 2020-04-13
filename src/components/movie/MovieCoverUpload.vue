@@ -1,58 +1,12 @@
 <template>
-  <div class="img-container elevation-2">
-    <v-img v-if="src" :src="src"></v-img>
-
-    <base-placeholder-image v-if="!src" :aspect-ratio="800/540"></base-placeholder-image>
-
-    <div v-show="!img || loading" class="img-btn">
-      <v-btn
-        fab
-        small
-        @click="$refs.file.click()"
-        :loading="loading"
-        :disabled="loading"
-      >
-        <v-icon>edit</v-icon>
-      </v-btn>
-
-      <v-btn
-        v-show="src"
-        fab
-        small
-        class="ml-2 error--text"
-        @click="onRemove()"
-        :loading="loading"
-        :disabled="loading"
-      >
-        <v-icon>clear</v-icon>
-      </v-btn>
-    </div>
-
-    <div v-show="img && !loading" class="img-btn">
-      <v-btn
-        fab
-        small
-        @click="onUpload()">
-        <v-icon>cloud_upload</v-icon>
-      </v-btn>
-      <v-btn
-        fab
-        small
-        class="ml-2 error--text"
-        @click="img = undefined"
-      >
-        <v-icon>clear</v-icon>
-      </v-btn>
-    </div>
-
-    <input
-      type="file"
-      ref="file"
-      class="d-none"
-      accept=".png, .jpg, .jpeg"
-      @change="onImgPicked($event.target.files)"
-    >
-  </div>
+  <base-image-picker
+    :default-image="src"
+    :loading="loading"
+    :aspect-ratio="800/540"
+    @upload="onUpload($event)"
+    @remove="onRemove()"
+  >
+  </base-image-picker>
 </template>
 
 <script lang="ts">
@@ -60,62 +14,39 @@ import { Component, Emit, Prop } from 'vue-property-decorator';
 import Movie from '@/models/movie';
 import { AxiosResponse } from 'axios';
 import { default as Cover } from '@/models/file';
-import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
 import { mixins } from 'vue-class-component';
 import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
+import BaseImagePicker from '@/components/BaseImagePicker.vue';
 
 @Component({
-  components: { BasePlaceholderImage },
+  components: { BaseImagePicker },
 })
 export default class MovieCoverUpload extends mixins(NotifySnackbarMixin) {
   @Prop() movie!: Movie;
   loading = false;
-  img?: File;
-
-  $refs!: {
-    file: HTMLInputElement;
-  };
-
-  data() {
-    return {
-      img: undefined,
-    };
-  }
 
   get src(): string {
-    if (this.img) {
-      return URL.createObjectURL(this.img);
-    }
     return this.$options.filters?.mediaSource(this.movie?.cover, 'images') || '';
   }
 
   @Emit()
   imageChange(src: string): string {
-    this.img = undefined;
     this.showSnackbar('Image changed successfully!');
     return src;
   }
 
-  onImgPicked(files: FileList) {
-    if (files.length > 0) {
-      [this.img] = files;
-    }
-  }
-
-  async onUpload(): Promise<void> {
-    if (this.img) {
-      this.loading = true;
-      try {
-        if (this.movie.cover) {
-          await this.updateExistedImage(this.img);
-        } else {
-          await this.uploadImage(this.img);
-        }
-      } catch (e) {
-        this.showErrorSnackbar('Upload Failed!', e.response?.status);
-      } finally {
-        this.loading = false;
+  async onUpload(img: File): Promise<void> {
+    this.loading = true;
+    try {
+      if (this.movie.cover) {
+        await this.updateExistedImage(img);
+      } else {
+        await this.uploadImage(img);
       }
+    } catch (e) {
+      this.showErrorSnackbar('Upload Failed!', e.response?.status);
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -173,16 +104,3 @@ export default class MovieCoverUpload extends mixins(NotifySnackbarMixin) {
 }
 
 </script>
-
-<style scoped>
-  .img-container {
-    width: 100%;
-    position: relative;
-  }
-
-  .img-btn {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-  }
-</style>
