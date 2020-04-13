@@ -13,31 +13,42 @@
       >
       </v-text-field>
     </validation-provider>
-    <v-menu
-      v-model="datepickerMenu"
-      :close-on-content-click="false"
-      :nudge-right="40"
-      transition="scale-transition"
-      offset-y
-      min-width="290px"
+    <validation-provider
+      v-slot="{ errors }"
+      name="birth"
+      rules="date"
     >
-      <template v-slot:activator="{ on }">
-        <v-text-field
-          v-model="form.birth"
-          label="Date of Birth"
-          readonly
-          v-on="on"
-        >
-        </v-text-field>
-      </template>
-      <v-date-picker
-        format
-        no-title
+      <v-text-field
         v-model="form.birth"
-        @input="datepickerMenu = false"
+        label="Date of Birth"
+        hint="Format: YYYY-MM-DD"
+        :error-messages="errors"
       >
-      </v-date-picker>
-    </v-menu>
+        <template v-slot:append>
+          <v-menu
+            left
+            v-model="datepickerMenu"
+            :close-on-content-click="false"
+            :nudge-left="40"
+            transition="scale-transition"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-btn icon v-on="on" :disabled="errors.length > 0">
+                <v-icon>event</v-icon>
+              </v-btn>
+            </template>
+            <v-date-picker
+              format
+              no-title
+              v-model="form.birth"
+              @input="datepickerMenu = false"
+            >
+            </v-date-picker>
+          </v-menu>
+        </template>
+      </v-text-field>
+    </validation-provider>
     <div class="d-flex mt-3">
       <v-spacer></v-spacer>
       <slot name="actions"></slot>
