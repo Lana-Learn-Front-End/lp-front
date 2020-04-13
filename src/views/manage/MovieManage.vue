@@ -43,8 +43,10 @@
         <v-text-field
           single-line
           append-icon="search"
-          name="filter"
-          placeholder="Filter movies"
+          name="search"
+          placeholder="Search movies"
+          v-model.trim="search"
+          @keyup.enter="fetchMovies()"
         >
         </v-text-field>
         <MovieSortingDropdown class="ml-3" v-model="sort"></MovieSortingDropdown>
@@ -135,14 +137,17 @@ import MovieEdit from '@/components/movie/MovieEdit.vue';
   components: { MovieEdit, MovieSortingDropdown, BasePlaceholderImage, MovieForm },
 })
 export default class MovieManage extends Vue {
+  movies: Movie[] = [];
+
   createDialog = false;
   updateDialog = false;
   updateDialogMovie: Movie | null = null;
-  movies: Movie[] = [];
   loading = false;
+
   page = 1;
   totalPages = 1;
   sort = '';
+  search = '';
 
   $refs!: {
     createForm: MovieForm & { reset(): void };
@@ -199,6 +204,7 @@ export default class MovieManage extends Vue {
         params: {
           page: this.page,
           sort: this.sort,
+          q: getQueryString(this.search),
         },
       })
       .then((res: AxiosResponse<Page<Movie>>) => res.data)
@@ -210,5 +216,12 @@ export default class MovieManage extends Vue {
         this.loading = false;
       });
   }
+}
+
+function getQueryString(keyword: string): string {
+  if (!keyword) {
+    return '';
+  }
+  return `name=ilike=${keyword},code=ilike=${keyword}`;
 }
 </script>

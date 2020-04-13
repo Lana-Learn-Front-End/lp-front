@@ -33,10 +33,10 @@
       <div class="d-flex align-center">
         <v-text-field
           single-line
-          v-model="search"
+          v-model.trim="search"
           append-icon="search"
-          name="filter"
-          placeholder="Filter tags"
+          name="search"
+          placeholder="Search tags"
         >
         </v-text-field>
         <v-spacer class="d-none d-sm-block"></v-spacer>

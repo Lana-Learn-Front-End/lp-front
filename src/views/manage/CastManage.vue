@@ -42,9 +42,11 @@
       <div class="d-flex align-center">
         <v-text-field
           single-line
+          v-model.trim="search"
           append-icon="search"
           name="filter"
           placeholder="Filter casts"
+          @keyup.enter="fetchCasts()"
         >
         </v-text-field>
         <v-spacer class="d-none d-sm-block"></v-spacer>
@@ -133,13 +135,16 @@ import CastEdit from '@/components/cast/CastEdit.vue';
   components: { BasePlaceholderImage, CastForm, CastEdit },
 })
 export default class CastManage extends Vue {
+  casts: Cast[] = [];
+
   createDialog = false;
   updateDialog = false;
   updateDialogCast: Cast | null = null;
-  casts: Cast[] = [];
+
   loading = false;
   page = 1;
   totalPages = 1;
+  search = '';
 
   $refs!: {
     createForm: CastForm & { reset(): void };
@@ -191,6 +196,7 @@ export default class CastManage extends Vue {
         params: {
           page: this.page,
           size: 30,
+          q: this.search ? `name=ilike=${this.search}` : '',
         },
       })
       .then((res: AxiosResponse<Page<Cast>>) => res.data)
