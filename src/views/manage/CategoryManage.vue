@@ -1,6 +1,34 @@
 <template>
   <v-card>
-    <v-card-title>Categories Management</v-card-title>
+    <v-card-title class="d-flex justify-space-between">
+      <span>Categories Management</span>
+      <v-dialog
+        retain-focus
+        max-width="300px"
+        v-model="createDialog"
+        @click:outside="closeCreateDialog()"
+      >
+        <template v-slot:activator="{ on }">
+          <v-btn text class="ml-3 ml-sm-0" v-on="on">
+            <v-icon left>add</v-icon>
+            <span>New</span>
+          </v-btn>
+        </template>
+
+        <template v-slot:default>
+          <v-card>
+            <v-card-title>Create new category</v-card-title>
+            <v-card-text>
+              <category-form
+                ref="createForm"
+                @create="onCreated($event)"
+              >
+              </category-form>
+            </v-card-text>
+          </v-card>
+        </template>
+      </v-dialog>
+    </v-card-title>
     <v-card-text>
       <div class="d-flex align-center">
         <v-text-field
@@ -12,33 +40,6 @@
         >
         </v-text-field>
         <v-spacer class="d-none d-sm-block"></v-spacer>
-        <v-dialog
-          retain-focus
-          max-width="300px"
-          v-model="createDialog"
-          @click:outside="closeCreateDialog()"
-        >
-          <template v-slot:activator="{ on }">
-            <v-btn text class="ml-4 ml-sm-0" v-on="on">
-              <v-icon class="d-none d-sm-block">add</v-icon>
-              <span>New</span>
-            </v-btn>
-          </template>
-
-          <template v-slot:default>
-            <v-card>
-              <v-card-title>Create new category</v-card-title>
-              <v-card-text>
-                <category-form
-                  ref="createForm"
-                  @create="onCreated($event)"
-                >
-                </category-form>
-              </v-card-text>
-            </v-card>
-          </template>
-
-        </v-dialog>
       </div>
       <div class="mt-5 mt-md-8">
         <div class="d-flex justify-center" v-if="loading">
