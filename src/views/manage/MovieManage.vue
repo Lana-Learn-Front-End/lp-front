@@ -87,25 +87,25 @@
               </div>
               <v-card-title class="body-1">
                 <div>
-                  [{{ movie.code }}] {{ movie.name | truncate(120, true)}}
+                  [{{ movie.code }}] {{ movie.name | truncate(120, true) }}
                 </div>
               </v-card-title>
             </v-card>
-            <v-dialog
-              v-model="updateDialog"
-              fullscreen
-            >
-              <template v-slot:default>
-                <movie-edit
-                  :movie="updateDialogMovie"
-                  @update="onMovieUpdate($event)"
-                  @delete="onMovieDelete()"
-                  @complete="closeUpdateDialog()"
-                >
-                </movie-edit>
-              </template>
-            </v-dialog>
           </v-col>
+          <v-dialog
+            v-model="updateDialog"
+            fullscreen
+          >
+            <template v-slot:default>
+              <movie-edit
+                :movie="updateDialogMovie"
+                @update="onMovieUpdate($event)"
+                @delete="onMovieDelete()"
+                @complete="closeUpdateDialog()"
+              >
+              </movie-edit>
+            </template>
+          </v-dialog>
         </v-row>
       </div>
 
