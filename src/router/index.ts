@@ -4,6 +4,7 @@ import TagManage from '@/views/manage/TagManage.vue';
 import MovieManage from '@/views/manage/MovieManage.vue';
 import ContentManage from '@/views/manage/ContentManager.vue';
 import CategoryManage from '@/views/manage/CategoryManage.vue';
+import CastManage from '@/views/manage/CastManage.vue';
 
 Vue.use(VueRouter);
 
@@ -36,6 +37,11 @@ const routes: RouteConfig[] = [
         path: 'categories',
         name: 'CategoryManage',
         component: CategoryManage,
+      },
+      {
+        path: 'casts',
+        name: 'CastManage',
+        component: CastManage,
       },
     ],
   },
