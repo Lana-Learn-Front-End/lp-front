@@ -127,7 +127,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import CastForm from '@/components/cast/CastForm.vue';
 import Cast from '@/models/cast';
 import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
-import Page from '@/models/page';
+import Page from '@/models/util/page';
 import { AxiosResponse } from 'axios';
 import CastEdit from '@/components/cast/CastEdit.vue';
 
