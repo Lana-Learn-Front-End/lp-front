@@ -69,31 +69,13 @@
             cols="12"
             sm="6"
             md="4"
-            lg="3"
+            xl="3"
           >
-            <v-card
-              height="100%"
-              @click.stop="openUpdateDialog(movie)"
+            <movie-card
+              :movie="movie"
+              @click="openUpdateDialog(movie)"
             >
-              <div>
-                <v-img
-                  v-if="movie.cover"
-                  :src="movie.cover | mediaSource('images')"
-                  :aspect-ratio="800/540"
-                >
-                </v-img>
-                <base-placeholder-image
-                  v-if="!movie.cover"
-                  :aspect-ratio="800/540"
-                >
-                </base-placeholder-image>
-              </div>
-              <v-card-title class="body-1">
-                <div>
-                  [{{ movie.code }}] {{ movie.name | truncate(120, true) }}
-                </div>
-              </v-card-title>
-            </v-card>
+            </movie-card>
           </v-col>
           <v-dialog
             v-model="updateDialog"
@@ -128,13 +110,14 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import MovieForm from '@/components/movie/MovieForm.vue';
 import Movie from '@/models/movie';
 import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
-import Page from '@/models/page';
+import Page from '@/models/util/page';
 import { AxiosResponse } from 'axios';
 import MovieSortingDropdown from '@/components/movie/MovieSortingDropdown.vue';
 import MovieEdit from '@/components/movie/MovieEdit.vue';
+import MovieCard from '@/components/movie/MovieCard.vue';
 
 @Component({
-  components: { MovieEdit, MovieSortingDropdown, BasePlaceholderImage, MovieForm },
+  components: { MovieCard, MovieEdit, MovieSortingDropdown, BasePlaceholderImage, MovieForm },
 })
 export default class MovieManage extends Vue {
   movies: Movie[] = [];
