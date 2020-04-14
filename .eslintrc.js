@@ -20,6 +20,8 @@ module.exports = {
         'allow': ['Vue'] //for Vue plugin development
       }
     ],
+    'semi': 'off',
+    '@typescript-eslint/semi': 'error',
     'prefer-destructuring': 'warn',
     'no-param-reassign': 'off',
     'linebreak-style': 'off',
