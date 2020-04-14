@@ -8,6 +8,14 @@ Vue.filter('capitalize', (value: string) => (
     .join(' ')
 ));
 
+Vue.filter('date', (value: string): string => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate()}`;
+});
+
 Vue.filter('truncate', (value: string, maxLength: number, ellipsis?: boolean) => {
   if (value.length <= maxLength) {
     return value;
