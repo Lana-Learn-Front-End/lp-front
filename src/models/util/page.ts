@@ -8,3 +8,16 @@ export default interface Page<T> {
   isFirst: boolean;
   isLast: boolean;
 }
+
+export function getDefaultPage<T>(): Page<T> {
+  return {
+    content: [],
+    pageNumber: 1,
+    pageSize: 20,
+    totalPages: 1,
+    totalElements: 0,
+    numberOfElements: 0,
+    isFirst: true,
+    isLast: true,
+  };
+}
