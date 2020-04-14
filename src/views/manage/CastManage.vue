@@ -95,7 +95,7 @@
           </v-col>
           <v-dialog
             v-model="updateDialog"
-            max-width="300px"
+            max-width="350px"
             retain-focus
           >
             <template v-slot:default>
@@ -169,7 +169,7 @@ export default class CastManage extends Vue {
   }
 
   async onCastCreated(cast: Cast) {
-    this.createDialog = false;
+    this.closeCreateDialog();
     await this.fetchCasts();
     this.openUpdateDialog(this.casts.find((m: Cast) => m.id === cast.id) || cast);
   }

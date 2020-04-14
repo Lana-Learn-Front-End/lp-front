@@ -177,7 +177,7 @@ export default class MovieManage extends Vue {
   }
 
   async onMovieCreated(movie: Movie) {
-    this.createDialog = false;
+    this.closeCreateDialog();
     await this.fetchMovies();
     this.openUpdateDialog(this.movies.find((m: Movie) => m.id === movie.id) || movie);
   }
