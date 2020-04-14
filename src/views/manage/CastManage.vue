@@ -46,7 +46,7 @@
           append-icon="search"
           name="filter"
           placeholder="Filter casts"
-          @keyup.enter="fetchCasts()"
+          @keyup.enter="onSearch()"
         >
         </v-text-field>
         <v-spacer class="d-none d-sm-block"></v-spacer>
@@ -157,6 +157,15 @@ export default class CastManage extends Vue {
   @Watch('page')
   pageChange() {
     this.fetchCasts();
+  }
+
+  onSearch() {
+    if (this.page === 1) {
+      this.fetchCasts();
+    } else {
+      // page change will trigger fetch.
+      this.page = 1;
+    }
   }
 
   onCastUpdate(cast: Cast) {

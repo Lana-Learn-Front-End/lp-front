@@ -46,7 +46,7 @@
           name="search"
           placeholder="Search movies"
           v-model.trim="search"
-          @keyup.enter="fetchMovies()"
+          @keyup.enter="onSearch()"
         >
         </v-text-field>
         <MovieSortingDropdown class="ml-3" v-model="sort"></MovieSortingDropdown>
@@ -148,6 +148,15 @@ export default class MovieManage extends Vue {
   @Watch('sort')
   sortChange() {
     this.fetchMovies();
+  }
+
+  onSearch() {
+    if (this.page === 1) {
+      this.fetchMovies();
+    } else {
+      // page change will trigger fetch.
+      this.page = 1;
+    }
   }
 
   onMovieUpdate(movie: Movie) {
