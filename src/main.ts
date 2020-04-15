@@ -10,7 +10,6 @@ import './core/filters';
 import './plugins/class-component-hooks';
 import './plugins/vee-validate';
 import './plugins/event-bus';
-import './plugins/axios/axios';
 import './plugins/notify/snackbar';
 import './plugins/notify/notify-modal';
 
