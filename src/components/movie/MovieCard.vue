@@ -3,6 +3,7 @@
     height="100%"
     @click="click()"
     ripple
+    :to="to"
   >
     <div>
       <v-img
@@ -60,12 +61,14 @@
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
 import Movie from '@/models/movie';
 import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
+import { Route } from 'vue-router';
 
 @Component({
   components: { BasePlaceholderImage },
 })
 export default class MovieCard extends Vue {
   @Prop({ required: true }) movie!: Movie;
+  @Prop() to!: string | Route;
 
   get maxNameLength(): number {
     if (this.$vuetify.breakpoint.lgAndUp) {

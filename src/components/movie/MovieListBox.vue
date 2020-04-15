@@ -1,6 +1,25 @@
 <template>
   <v-card>
-    <v-card-title>{{ title }}</v-card-title>
+    <v-card-title>
+      <span>
+        {{ title }}
+        <v-btn
+          v-if="to"
+          icon
+          class="d-inline d-sm-none"
+        >
+          <v-icon>link</v-icon>
+        </v-btn>
+      </span>
+      <v-btn
+        v-if="to"
+        color="primary darken-2"
+        small
+        class="ml-3 d-none d-sm-block"
+      >
+        See more
+      </v-btn>
+    </v-card-title>
     <v-divider></v-divider>
     <v-card-text>
       <v-window
