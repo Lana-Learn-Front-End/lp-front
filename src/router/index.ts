@@ -5,6 +5,7 @@ import MovieManage from '@/views/manage/MovieManage.vue';
 import ContentManage from '@/views/manage/ContentManager.vue';
 import CategoryManage from '@/views/manage/CategoryManage.vue';
 import CastManage from '@/views/manage/CastManage.vue';
+import Home from '@/views/Home.vue';
 
 Vue.use(VueRouter);
 
@@ -12,7 +13,12 @@ const routes: RouteConfig[] = [
   {
     path: '/',
     name: 'Root',
-    redirect: '/manage',
+    redirect: '/home',
+  },
+  {
+    path: '/home',
+    name: 'Home',
+    component: Home,
   },
   {
     path: '/manage',

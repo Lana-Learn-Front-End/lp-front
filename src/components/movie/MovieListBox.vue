@@ -66,6 +66,7 @@ export default class MovieListBox extends Vue {
   @Prop({ type: Array, required: true }) movies!: Movie[];
   @Prop({ type: String, default: 'Movies' }) title!: string;
   @Prop({ type: [String, Object] }) to?: string | Route;
+  @Prop({ type: Number, default: 1 }) rowsPerPage!: number;
 
   window = 0;
   private windowAutoSwitchId?: number;
@@ -111,12 +112,12 @@ export default class MovieListBox extends Vue {
 
   get itemPerGroup(): number {
     if (this.$vuetify.breakpoint.xsOnly) {
-      return 1;
+      return this.rowsPerPage;
     }
     if (this.$vuetify.breakpoint.smOnly) {
-      return 2;
+      return this.rowsPerPage * 2;
     }
-    return 3;
+    return this.rowsPerPage * 3;
   }
 }
 </script>
