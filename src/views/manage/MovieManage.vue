@@ -72,6 +72,7 @@
             xl="3"
           >
             <movie-card
+              class="h-100"
               :movie="movie"
               @click="openUpdateDialog(movie)"
             >

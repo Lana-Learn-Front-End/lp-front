@@ -1,11 +1,9 @@
 <template>
   <v-card
-    height="100%"
     @click="click()"
-    ripple
     :to="to"
   >
-    <div>
+    <div class="movie-card__cover-image">
       <v-img
         v-if="movie.cover"
         :src="movie.cover | mediaSource('images')"
@@ -17,6 +15,10 @@
         :aspect-ratio="800/540"
       >
       </base-placeholder-image>
+      <div class="movie-card__view-count px-1">
+        <v-icon x-small class="mr-1">visibility</v-icon>
+        <span class="caption">{{ movie.view || 0 }}</span>
+      </div>
     </div>
 
     <v-card-title class="body-1 font-weight-bold">{{ movie.code }}</v-card-title>
@@ -36,6 +38,7 @@
           label
           class="ml-1 mt-1"
           color="yellow darken-4"
+          :to="{ name:'TagDetail', params: { id: tag.id } }"
         >
           {{ tag.name }}
         </v-chip>
@@ -49,6 +52,7 @@
           label
           class="ml-1 mt-1"
           color="primary darken-2"
+          :to="{ name:'CastDetail', params: { id: cast.id } }"
         >
           {{ cast.name }}
         </v-chip>
@@ -83,3 +87,17 @@ export default class MovieCard extends Vue {
   }
 }
 </script>
+
+<style scoped>
+  .movie-card__cover-image {
+    position: relative;
+  }
+
+  .movie-card__view-count {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: rgba(18, 18, 18, .5);
+    border-top-left-radius: 10px;
+  }
+</style>

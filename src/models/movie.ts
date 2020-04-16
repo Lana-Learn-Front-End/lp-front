@@ -8,6 +8,8 @@ export default interface Movie extends Auditable {
   code: string;
   name: string;
   cover: string;
+  source: string;
+  view: number;
   casts: Cast[];
   tags: Tag[];
   categories: Category[];

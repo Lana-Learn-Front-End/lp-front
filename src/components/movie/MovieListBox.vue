@@ -41,8 +41,9 @@
               md="4"
             >
               <movie-card
+                class="h-100"
                 :movie="movie"
-                :to="{ name: 'MovieDetail', params: { id: 0 } }"
+                :to="{ name: 'MovieDetail', params: { id: movie.id } }"
               >
               </movie-card>
             </v-col>
