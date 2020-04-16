@@ -1,6 +1,6 @@
 <template>
   <base-image-picker
-    :default-image="src"
+    :default-image="src | mediaSource('images')"
     :loading="loading"
     :aspect-ratio="1"
     @upload="onUpload($event)"
@@ -12,11 +12,14 @@
 <script lang="ts">
 import { Component, Emit, Prop } from 'vue-property-decorator';
 import Cast from '@/models/cast';
-import { AxiosResponse } from 'axios';
-import { default as Cover } from '@/models/file';
 import { mixins } from 'vue-class-component';
 import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
 import BaseImagePicker from '@/components/BaseImagePicker.vue';
+import FileApi, { FileType } from '@/api/file-api';
+import { AxiosResponse } from 'axios';
+import FileMetadata from '@/models/file-metadata';
+import CastApi from '@/api/cast-api';
+
 
 @Component({
   components: { BaseImagePicker },
@@ -26,7 +29,7 @@ export default class CastCoverUpload extends mixins(NotifySnackbarMixin) {
   loading = false;
 
   get src(): string {
-    return this.$options.filters?.mediaSource(this.cast?.image, 'images') || '';
+    return this.cast?.image || '';
   }
 
   @Emit()
@@ -39,9 +42,11 @@ export default class CastCoverUpload extends mixins(NotifySnackbarMixin) {
     this.loading = true;
     try {
       if (this.cast.image) {
-        await this.updateExistedImage(img);
+        await FileApi.update(FileType.IMAGE, this.cast.image, img);
+        this.imageChange(this.cast.image);
       } else {
-        await this.uploadImage(img);
+        const res: AxiosResponse<FileMetadata> = await FileApi.create(FileType.IMAGE, img);
+        await this.updateCast(res.data.id);
       }
     } catch (e) {
       this.showErrorSnackbar('Upload Failed!', e.response?.status);
@@ -53,9 +58,9 @@ export default class CastCoverUpload extends mixins(NotifySnackbarMixin) {
   async onRemove(): Promise<void> {
     this.loading = true;
     try {
-      const deleteUrl: string = this.src;
+      const fileId: string = this.src;
       await this.updateCast('');
-      await this.$axios.delete(deleteUrl);
+      await FileApi.delete(FileType.IMAGE, fileId);
       this.imageChange('');
     } catch (e) {
       this.showErrorSnackbar('Remove Failed!', e.response?.status);
@@ -64,42 +69,17 @@ export default class CastCoverUpload extends mixins(NotifySnackbarMixin) {
     }
   }
 
-  private async uploadImage(img: File): Promise<void> {
-    const formData = new FormData();
-    formData.append('file', img);
-    const res: AxiosResponse<Cover> = await this.$axios.post('/data/images', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    await this.updateCast(res.data.id);
-  }
-
   private async updateCast(image: string) {
     try {
-      this.cast.image = image;
-      await this.$axios.put(
-        `/api/casts/${this.cast.id}`,
-        this.cast,
+      await CastApi.update(
+        this.cast.id,
+        { ...this.cast, image },
       );
       this.imageChange(image);
     } catch (e) {
-      if (image && this.$options.filters?.mediaSource) {
-        await this.$axios.delete(this.$options.filters?.mediaSource(image, 'images'));
-        this.showErrorSnackbar('Upload Failed!', e.response?.status);
-      }
+      await FileApi.delete(FileType.IMAGE, image);
+      this.showErrorSnackbar('Upload Failed!', e.response?.status);
     }
-  }
-
-  private async updateExistedImage(img: File): Promise<void> {
-    const formData = new FormData();
-    formData.append('file', img);
-    await this.$axios.put(`/data/images/${this.cast.image}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    this.imageChange(this.cast.image);
   }
 }
 </script>

@@ -51,9 +51,10 @@
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator';
 import Tag from '@/models/tag';
 import { ValidationObserver } from 'vee-validate';
-import { AxiosError, AxiosResponse } from 'axios';
 import { mixins } from 'vue-class-component';
 import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
+import TagApi from '@/api/tag-api';
+import { AxiosError } from '@/api/axios';
 
 @Component
 export default class TagForm extends mixins(NotifySnackbarMixin) {
@@ -97,8 +98,8 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
     }
     if (this.edit) {
       this.loading = true;
-      await this.$axios
-        .delete(`/api/tags/${this.edit.id}`)
+      await TagApi
+        .delete(this.edit.id)
         .then(() => this.delete(this.edit as Tag))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Tag delete failed', e.response?.status);
@@ -114,9 +115,9 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
       this.name = this.$options.filters?.capitalize(this.name);
       this.loading = true;
 
-      await this.$axios
-        .post<Tag>('/api/tags', { name: this.name })
-        .then((res: AxiosResponse<Tag>) => this.create(res.data))
+      await TagApi
+        .create({ name: this.name })
+        .then((res) => this.create(res.data))
         .catch((e: AxiosError) => {
           if (e.response && e.response.status === 409) {
             this.$refs.observer.setErrors({
@@ -137,9 +138,9 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
       this.name = this.$options.filters?.capitalize(this.name);
       this.loading = true;
 
-      await this.$axios
-        .put<Tag>(`/api/tags/${this.edit.id}`, { name: this.name })
-        .then((res: AxiosResponse<Tag>) => this.update(res.data))
+      await TagApi
+        .update(this.edit.id, { ...this.edit, name: this.name })
+        .then((res) => this.update(res.data))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Tag update failed!', e.response?.status);
         })

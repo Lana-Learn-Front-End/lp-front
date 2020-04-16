@@ -111,10 +111,10 @@ import MovieForm from '@/components/movie/MovieForm.vue';
 import Movie from '@/models/movie';
 import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
 import Page from '@/models/util/page';
-import { AxiosResponse } from 'axios';
 import MovieSortingDropdown from '@/components/movie/MovieSortingDropdown.vue';
 import MovieEdit from '@/components/movie/MovieEdit.vue';
 import MovieCard from '@/components/movie/MovieCard.vue';
+import MovieApi from '@/api/movie-api';
 
 @Component({
   components: { MovieCard, MovieEdit, MovieSortingDropdown, BasePlaceholderImage, MovieForm },
@@ -191,15 +191,15 @@ export default class MovieManage extends Vue {
 
   async fetchMovies(): Promise<void> {
     this.loading = true;
-    await this.$axios
-      .get('/api/movies', {
+    await MovieApi
+      .getPage({
         params: {
           page: this.page,
           sort: this.sort,
           q: getQueryString(this.search),
         },
       })
-      .then((res: AxiosResponse<Page<Movie>>) => res.data)
+      .then((res) => res.data)
       .then((moviePage: Page<Movie>) => {
         this.movies = moviePage.content;
         this.totalPages = moviePage.totalPages;

@@ -128,8 +128,8 @@ import CastForm from '@/components/cast/CastForm.vue';
 import Cast from '@/models/cast';
 import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
 import Page from '@/models/util/page';
-import { AxiosResponse } from 'axios';
 import CastEdit from '@/components/cast/CastEdit.vue';
+import CastApi from '@/api/cast-api';
 
 @Component({
   components: { BasePlaceholderImage, CastForm, CastEdit },
@@ -200,15 +200,15 @@ export default class CastManage extends Vue {
 
   async fetchCasts(): Promise<void> {
     this.loading = true;
-    await this.$axios
-      .get('/api/casts', {
+    await CastApi
+      .getPage({
         params: {
           page: this.page,
           size: 30,
           q: this.search ? `name=ilike=${this.search}` : '',
         },
       })
-      .then((res: AxiosResponse<Page<Cast>>) => res.data)
+      .then((res) => res.data)
       .then((castPage: Page<Cast>) => {
         this.casts = castPage.content;
         this.totalPages = castPage.totalPages;

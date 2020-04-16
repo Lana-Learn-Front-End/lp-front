@@ -97,11 +97,15 @@ import { Component, Emit, Prop, Watch } from 'vue-property-decorator';
 import { ValidationObserver } from 'vee-validate';
 import Cast from '@/models/cast';
 import Tag from '@/models/tag';
-import { AxiosError, AxiosResponse } from 'axios';
 import Movie from '@/models/movie';
 import Category from '@/models/category';
 import { mixins } from 'vue-class-component';
 import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
+import MovieApi from '@/api/movie-api';
+import TagApi from '@/api/tag-api';
+import { AxiosError } from '@/api/axios';
+import CastApi from '@/api/cast-api';
+import CategoryApi from '@/api/category-api';
 
 @Component
 export default class MovieForm extends mixins(NotifySnackbarMixin) {
@@ -125,9 +129,9 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
   }
 
   async created() {
-    this.casts = (await this.$axios.get<Cast[]>('/api/casts/all')).data;
-    this.tags = (await this.$axios.get<Tag[]>('/api/tags/all')).data;
-    this.categories = (await this.$axios.get<Tag[]>('/api/categories/all')).data;
+    this.casts = (await CastApi.getAll()).data;
+    this.tags = (await TagApi.getAll()).data;
+    this.categories = (await CategoryApi.getAll()).data;
   }
 
   @Watch('edit', { immediate: true })
@@ -163,8 +167,8 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
     }
     if (this.edit) {
       this.loading = true;
-      await this.$axios
-        .delete(`/api/movies/${this.edit.id}`)
+      await MovieApi
+        .delete(this.edit.id)
         .then(() => this.delete(this.edit as Movie))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Movie delete failed', e.response?.status);
@@ -181,9 +185,9 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
       this.form.code = uppercaseCode(this.form.code);
       this.loading = true;
 
-      await this.$axios
-        .post<Movie>('/api/movies', this.form)
-        .then((res: AxiosResponse) => this.create(res.data))
+      await MovieApi
+        .create(this.form)
+        .then((res) => this.create(res.data))
         .catch((e: AxiosError) => {
           if (e.response) {
             if (e.response.status === 409) {
@@ -207,12 +211,12 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
       this.form.code = uppercaseCode(this.form.code);
 
       this.loading = true;
-      await this.$axios
-        .put<Movie>(`/api/movies/${this.edit.id}`, {
+      await MovieApi
+        .update(this.edit.id, {
           ...this.edit,
           ...this.form,
         })
-        .then((res: AxiosResponse) => this.update(res.data))
+        .then((res) => this.update(res.data))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Movie update failed', e.response?.status);
         })

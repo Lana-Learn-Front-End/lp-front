@@ -92,7 +92,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Category from '@/models/category';
 import CategoryForm from '@/components/CategoryForm.vue';
-import { AxiosResponse } from 'axios';
+import CategoryApi from '@/api/category-api';
 
 @Component({
   components: { CategoryForm },
@@ -148,9 +148,9 @@ export default class CategoryManage extends Vue {
 
   private fetchCategories() {
     this.loading = true;
-    this.$axios
-      .get<Category[]>('/api/categories/all')
-      .then((res: AxiosResponse<Category[]>) => {
+    CategoryApi
+      .getAll()
+      .then((res) => {
         this.categories = res.data;
       })
       .finally(() => {

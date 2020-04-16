@@ -51,9 +51,10 @@
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator';
 import Category from '@/models/category';
 import { ValidationObserver } from 'vee-validate';
-import { AxiosError, AxiosResponse } from 'axios';
 import { mixins } from 'vue-class-component';
 import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
+import CategoryApi from '@/api/category-api';
+import { AxiosError } from '@/api/axios';
 
 @Component
 export default class CategoryForm extends mixins(NotifySnackbarMixin) {
@@ -96,8 +97,8 @@ export default class CategoryForm extends mixins(NotifySnackbarMixin) {
       return;
     }
     if (this.edit) {
-      await this.$axios
-        .delete(`/api/categories/${this.edit.id}`)
+      await CategoryApi
+        .delete(this.edit.id)
         .then(() => this.delete(this.edit as Category))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Category delete failed', e.response?.status);
@@ -113,9 +114,9 @@ export default class CategoryForm extends mixins(NotifySnackbarMixin) {
       this.name = this.$options.filters?.capitalize(this.name);
       this.loading = true;
 
-      await this.$axios
-        .post<Category>('/api/categories', { name: this.name })
-        .then((res: AxiosResponse<Category>) => this.create(res.data))
+      await CategoryApi
+        .create({ name: this.name })
+        .then((res) => this.create(res.data))
         .catch((e: AxiosError) => {
           if (e.response && e.response.status === 409) {
             this.$refs.observer.setErrors({
@@ -136,9 +137,9 @@ export default class CategoryForm extends mixins(NotifySnackbarMixin) {
       this.name = this.$options.filters?.capitalize(this.name);
       this.loading = true;
 
-      await this.$axios
-        .put<Category>(`/api/categories/${this.edit.id}`, { name: this.name })
-        .then((res: AxiosResponse<Category>) => this.update(res.data))
+      await CategoryApi
+        .update(this.edit.id, { ...this.edit, name: this.name })
+        .then((res) => this.update(res.data))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Category update failed!', e.response?.status);
         })

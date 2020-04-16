@@ -92,7 +92,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Tag from '@/models/tag';
 import TagForm from '@/components/TagForm.vue';
-import { AxiosResponse } from 'axios';
+import TagApi from '@/api/tag-api';
 
 @Component({
   components: { TagForm },
@@ -148,9 +148,8 @@ export default class TagManage extends Vue {
 
   private fetchTags() {
     this.loading = true;
-    this.$axios
-      .get<Tag[]>('/api/tags/all')
-      .then((res: AxiosResponse<Tag[]>) => {
+    TagApi.getAll()
+      .then((res) => {
         this.tags = res.data;
       })
       .finally(() => {

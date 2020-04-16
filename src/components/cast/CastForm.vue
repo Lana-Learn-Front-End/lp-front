@@ -88,9 +88,10 @@
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator';
 import Cast from '@/models/cast';
 import { ValidationObserver } from 'vee-validate';
-import { AxiosError, AxiosResponse } from 'axios';
 import { mixins } from 'vue-class-component';
 import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
+import CastApi from '@/api/cast-api';
+import { AxiosError } from '@/api/axios';
 
 @Component
 export default class CastForm extends mixins(NotifySnackbarMixin) {
@@ -147,8 +148,8 @@ export default class CastForm extends mixins(NotifySnackbarMixin) {
     }
     if (this.edit) {
       this.loading = true;
-      await this.$axios
-        .delete(`/api/casts/${this.edit.id}`)
+      await CastApi
+        .delete(this.edit.id)
         .then(() => this.delete(this.edit as Cast))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Cast delete failed', e.response?.status);
@@ -164,9 +165,9 @@ export default class CastForm extends mixins(NotifySnackbarMixin) {
       this.form.name = this.$options.filters?.capitalize(this.form.name);
       this.loading = true;
 
-      await this.$axios
-        .post<Cast>('/api/casts', this.form)
-        .then((res: AxiosResponse) => this.create(res.data))
+      await CastApi
+        .create(this.form)
+        .then((res) => this.create(res.data))
         .catch((e: AxiosError) => {
           if (e.response) {
             if (e.response.status === 409) {
@@ -189,12 +190,12 @@ export default class CastForm extends mixins(NotifySnackbarMixin) {
       this.form.name = this.$options.filters?.capitalize(this.form.name);
 
       this.loading = true;
-      await this.$axios
-        .put<Cast>(`/api/casts/${this.edit.id}`, {
+      await CastApi
+        .update(this.edit.id, {
           ...this.edit,
           ...this.form,
         })
-        .then((res: AxiosResponse) => this.update(res.data))
+        .then((res) => this.update(res.data))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Cast update failed', e.response?.status);
         })
