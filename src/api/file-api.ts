@@ -15,7 +15,7 @@ const FileApi = {
   update(type: FileType, id: string, file: File): AxiosPromise<FileMetadata> {
     const formData = new FormData();
     formData.append('file', file);
-    return axios.put(`/data/${type}/${id}`, {
+    return axios.put(`/data/${type}/${id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
