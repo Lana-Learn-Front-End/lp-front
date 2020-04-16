@@ -76,7 +76,7 @@
               <div>
                 <v-img
                   v-if="cast.image"
-                  :src="cast.image | mediaSource('images')"
+                  :src="cast.image | image"
                   :aspect-ratio="1"
                 >
                 </v-img>

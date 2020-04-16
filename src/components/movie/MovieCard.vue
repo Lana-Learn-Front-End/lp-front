@@ -6,7 +6,7 @@
     <div class="movie-card__cover-image">
       <v-img
         v-if="movie.cover"
-        :src="movie.cover | mediaSource('images')"
+        :src="movie.cover | image"
         :aspect-ratio="800/540"
       >
       </v-img>

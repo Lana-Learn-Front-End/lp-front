@@ -1,6 +1,6 @@
 <template>
   <base-image-picker
-    :default-image="src | mediaSource('images')"
+    :default-image="src | image"
     :loading="loading"
     :aspect-ratio="800/540"
     @upload="onUpload($event)"

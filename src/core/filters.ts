@@ -27,12 +27,22 @@ Vue.filter('truncate', (value: string, maxLength: number, ellipsis?: boolean) =>
   return `${value.substr(0, maxLength)}...`;
 });
 
-Vue.filter('mediaSource', (value: string, ...paths: string[]) => {
+Vue.filter('image', (value: string) => {
   if (!value) {
     return '';
   }
   if (value.startsWith('blob:')) {
     return value;
   }
-  return `${process.env.VUE_APP_BASE_URL}/data/${paths.join('/')}/${value}`;
+  return `${process.env.VUE_APP_BASE_URL}/data/images/${value}`;
+});
+
+Vue.filter('video', (value: string) => {
+  if (!value) {
+    return '';
+  }
+  if (value.startsWith('blob:')) {
+    return value;
+  }
+  return `${process.env.VUE_APP_BASE_URL}/data/videos/${value}`;
 });
