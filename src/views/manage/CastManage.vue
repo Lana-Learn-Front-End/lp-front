@@ -169,7 +169,15 @@ export default class CastManage extends Vue {
   }
 
   onCastUpdate(cast: Cast) {
-    Object.assign(this.updateDialogCast, cast);
+    if (this.updateDialogCast && this.updateDialogCast.image === cast.image) {
+      // set src to empty to force image reload
+      this.updateDialogCast.image = '';
+    }
+    // wait for the change detect to run before change the src again
+    const origin: Cast | null = this.updateDialogCast;
+    setTimeout(() => {
+      Object.assign(origin, cast);
+    });
   }
 
   async onCastDelete() {
