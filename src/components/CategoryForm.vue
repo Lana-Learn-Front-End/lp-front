@@ -53,8 +53,8 @@ import Category from '@/models/category';
 import { ValidationObserver } from 'vee-validate';
 import { mixins } from 'vue-class-component';
 import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
-import CategoryApi from '@/api/category-api';
 import { AxiosError } from '@/api/axios';
+import CategoriesModule, { getCategoriesStore } from '@/store/categories';
 
 @Component
 export default class CategoryForm extends mixins(NotifySnackbarMixin) {
@@ -62,6 +62,7 @@ export default class CategoryForm extends mixins(NotifySnackbarMixin) {
   @Prop({ type: Boolean }) enableDelete!: boolean;
   loading = false;
   name = '';
+  private categoriesStore: CategoriesModule = getCategoriesStore();
 
   $refs!: {
     observer: InstanceType<typeof ValidationObserver>;
@@ -97,8 +98,8 @@ export default class CategoryForm extends mixins(NotifySnackbarMixin) {
       return;
     }
     if (this.edit) {
-      await CategoryApi
-        .delete(this.edit.id)
+      await this.categoriesStore
+        .removeCategory(this.edit.id)
         .then(() => this.delete(this.edit as Category))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Category delete failed', e.response?.status);
@@ -114,9 +115,9 @@ export default class CategoryForm extends mixins(NotifySnackbarMixin) {
       this.name = this.$options.filters?.capitalize(this.name);
       this.loading = true;
 
-      await CategoryApi
-        .create({ name: this.name })
-        .then((res) => this.create(res.data))
+      await this.categoriesStore
+        .addCategory({ name: this.name })
+        .then((category) => this.create(category))
         .catch((e: AxiosError) => {
           if (e.response && e.response.status === 409) {
             this.$refs.observer.setErrors({
@@ -137,9 +138,12 @@ export default class CategoryForm extends mixins(NotifySnackbarMixin) {
       this.name = this.$options.filters?.capitalize(this.name);
       this.loading = true;
 
-      await CategoryApi
-        .update(this.edit.id, { ...this.edit, name: this.name })
-        .then((res) => this.update(res.data))
+      await this.categoriesStore
+        .updateCategory({
+          id: this.edit.id,
+          category: { ...this.edit, name: this.name },
+        })
+        .then((category) => this.update(category))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Category update failed!', e.response?.status);
         })

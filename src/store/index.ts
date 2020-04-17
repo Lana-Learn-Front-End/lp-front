@@ -1,9 +1,8 @@
 import Vue from 'vue';
-import Vuex, { StoreOptions } from 'vuex';
+import Vuex, { Store } from 'vuex';
 
 Vue.use(Vuex);
 
-const store: StoreOptions<any> = {
-};
+const Root: Store<any> = new Vuex.Store({});
 
-export default new Vuex.Store(store);
+export default Root;

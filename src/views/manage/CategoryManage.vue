@@ -42,9 +42,9 @@
         <v-spacer class="d-none d-sm-block"></v-spacer>
       </div>
       <div class="mt-5 mt-md-8">
-        <div class="d-flex justify-center" v-if="loading">
+        <v-overlay :value="loading" absolute>
           <v-progress-circular indeterminate></v-progress-circular>
-        </div>
+        </v-overlay>
 
         <div class="text-center" v-show="!loading && filteredCategories.length  === 0">
           <span class="body-1">No categories found</span>
@@ -92,30 +92,33 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Category from '@/models/category';
 import CategoryForm from '@/components/CategoryForm.vue';
-import CategoryApi from '@/api/category-api';
+import CategoriesModule, { getCategoriesStore } from '@/store/categories';
 
 @Component({
   components: { CategoryForm },
 })
 export default class CategoryManage extends Vue {
-  categories: Category[] = [];
   loading = false;
   createDialog = false;
   updateDialog = false;
   updateDialogCategory: Category | null = null;
   search = '';
 
+  private categoriesStore: CategoriesModule = getCategoriesStore();
+
   $refs!: {
     createForm: CategoryForm & { reset(): void };
   };
 
-  created() {
-    this.fetchCategories();
+  async created() {
+    this.loading = true;
+    await this.categoriesStore.fetchCategories();
+    this.loading = false;
   }
 
   get filteredCategories(): Category[] {
     const filterReg = new RegExp(this.search, 'i');
-    return this.categories.filter(
+    return this.categoriesStore.categories.filter(
       (category: Category) => filterReg.test(category.name),
     );
   }
@@ -123,7 +126,6 @@ export default class CategoryManage extends Vue {
   onUpdatedOrDeleted() {
     this.updateDialog = false;
     this.updateDialogCategory = null;
-    this.fetchCategories();
   }
 
   openUpdateDialog(category: Category) {
@@ -138,24 +140,11 @@ export default class CategoryManage extends Vue {
 
   onCreated() {
     this.closeCreateDialog();
-    this.fetchCategories();
   }
 
   closeCreateDialog() {
     this.createDialog = false;
     this.$refs.createForm.reset();
-  }
-
-  private fetchCategories() {
-    this.loading = true;
-    CategoryApi
-      .getAll()
-      .then((res) => {
-        this.categories = res.data;
-      })
-      .finally(() => {
-        this.loading = false;
-      });
   }
 }
 </script>

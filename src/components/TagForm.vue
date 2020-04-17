@@ -53,8 +53,8 @@ import Tag from '@/models/tag';
 import { ValidationObserver } from 'vee-validate';
 import { mixins } from 'vue-class-component';
 import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
-import TagApi from '@/api/tag-api';
 import { AxiosError } from '@/api/axios';
+import TagsModule, { getTagsStore } from '@/store/tags';
 
 @Component
 export default class TagForm extends mixins(NotifySnackbarMixin) {
@@ -62,6 +62,7 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
   @Prop({ type: Boolean }) enableDelete!: boolean;
   loading = false;
   name = '';
+  private tagsStore: TagsModule = getTagsStore();
 
   $refs!: {
     observer: InstanceType<typeof ValidationObserver>;
@@ -98,8 +99,8 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
     }
     if (this.edit) {
       this.loading = true;
-      await TagApi
-        .delete(this.edit.id)
+      await this.tagsStore
+        .removeTag(this.edit.id)
         .then(() => this.delete(this.edit as Tag))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Tag delete failed', e.response?.status);
@@ -115,9 +116,9 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
       this.name = this.$options.filters?.capitalize(this.name);
       this.loading = true;
 
-      await TagApi
-        .create({ name: this.name })
-        .then((res) => this.create(res.data))
+      await this.tagsStore
+        .addTag({ name: this.name })
+        .then((tag) => this.create(tag))
         .catch((e: AxiosError) => {
           if (e.response && e.response.status === 409) {
             this.$refs.observer.setErrors({
@@ -138,10 +139,11 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
       this.name = this.$options.filters?.capitalize(this.name);
       this.loading = true;
 
-      await TagApi
-        .update(this.edit.id, { ...this.edit, name: this.name })
-        .then((res) => this.update(res.data))
+      await this.tagsStore
+        .updateTag({ id: this.edit.id, tag: { ...this.edit, name: this.name } })
+        .then((tag) => this.update(tag))
         .catch((e: AxiosError) => {
+          console.log(e);
           this.showErrorSnackbar('Tag update failed!', e.response?.status);
         })
         .finally(() => {

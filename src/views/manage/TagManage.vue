@@ -42,9 +42,9 @@
         <v-spacer class="d-none d-sm-block"></v-spacer>
       </div>
       <div class="mt-5 mt-md-8">
-        <div class="d-flex justify-center" v-if="loading">
+        <v-overlay :value="loading" absolute>
           <v-progress-circular indeterminate></v-progress-circular>
-        </div>
+        </v-overlay>
 
         <div class="text-center" v-show="!loading && filteredTags.length  === 0">
           <span class="body-1">No tags found</span>
@@ -92,30 +92,33 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Tag from '@/models/tag';
 import TagForm from '@/components/TagForm.vue';
-import TagApi from '@/api/tag-api';
+import TagsModule, { getTagsStore } from '@/store/tags';
 
 @Component({
   components: { TagForm },
 })
 export default class TagManage extends Vue {
-  tags: Tag[] = [];
   loading = false;
   createDialog = false;
   updateDialog = false;
   updateDialogTag: Tag | null = null;
   search = '';
 
+  private tagStore: TagsModule = getTagsStore();
+
   $refs!: {
     createForm: TagForm & { reset(): void };
   };
 
-  created() {
-    this.fetchTags();
+  async created() {
+    this.loading = true;
+    await this.tagStore.fetchTags();
+    this.loading = false;
   }
 
   get filteredTags(): Tag[] {
     const filterReg = new RegExp(this.search, 'i');
-    return this.tags.filter(
+    return this.tagStore.tags.filter(
       (tag: Tag) => filterReg.test(tag.name),
     );
   }
@@ -123,7 +126,6 @@ export default class TagManage extends Vue {
   onUpdatedOrDeleted() {
     this.updateDialog = false;
     this.updateDialogTag = null;
-    this.fetchTags();
   }
 
   openUpdateDialog(tag: Tag) {
@@ -138,23 +140,11 @@ export default class TagManage extends Vue {
 
   onCreated() {
     this.closeCreateDialog();
-    this.fetchTags();
   }
 
   closeCreateDialog() {
     this.createDialog = false;
     this.$refs.createForm.reset();
-  }
-
-  private fetchTags() {
-    this.loading = true;
-    TagApi.getAll()
-      .then((res) => {
-        this.tags = res.data;
-      })
-      .finally(() => {
-        this.loading = false;
-      });
   }
 }
 </script>

@@ -102,10 +102,10 @@ import Category from '@/models/category';
 import { mixins } from 'vue-class-component';
 import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
 import MovieApi from '@/api/movie-api';
-import TagApi from '@/api/tag-api';
 import { AxiosError } from '@/api/axios';
 import CastApi from '@/api/cast-api';
-import CategoryApi from '@/api/category-api';
+import { getCategoriesStore } from '@/store/categories';
+import { getTagsStore } from '@/store/tags';
 
 @Component
 export default class MovieForm extends mixins(NotifySnackbarMixin) {
@@ -129,9 +129,32 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
   }
 
   async created() {
-    this.casts = (await CastApi.getAll()).data;
-    this.tags = (await TagApi.getAll()).data;
-    this.categories = (await CategoryApi.getAll()).data;
+    await CastApi
+      .getAll()
+      .then((cast) => {
+        this.casts = cast.data;
+      })
+      .catch((e: AxiosError) => {
+        this.showErrorSnackbar('Cannot get cast list', e.response?.status);
+      });
+
+    await getTagsStore()
+      .fetchTags()
+      .then((tags) => {
+        this.tags = tags;
+      })
+      .catch((e: AxiosError) => {
+        this.showErrorSnackbar('Cannot get tag list', e.response?.status);
+      });
+
+    await getCategoriesStore()
+      .fetchCategories()
+      .then((categories) => {
+        this.categories = categories;
+      })
+      .catch((e: AxiosError) => {
+        this.showErrorSnackbar('Cannot get categories list', e.response?.status);
+      });
   }
 
   @Watch('edit', { immediate: true })
