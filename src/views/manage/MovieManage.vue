@@ -130,15 +130,17 @@ export default class MovieManage extends Vue {
 
   page = 1;
   totalPages = 1;
-  sort = '';
+  sort = 'updatedAt,desc';
   search = '';
 
   $refs!: {
     createForm: MovieForm & { reset(): void };
   };
 
-  created() {
-    this.fetchMovies();
+  async created() {
+    this.loading = true;
+    await this.fetchMovies();
+    this.loading = false;
   }
 
   @Watch('page')
