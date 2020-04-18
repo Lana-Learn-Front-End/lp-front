@@ -90,8 +90,8 @@ import Cast from '@/models/cast';
 import { ValidationObserver } from 'vee-validate';
 import { mixins } from 'vue-class-component';
 import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
-import CastApi from '@/api/cast-api';
 import { AxiosError } from '@/api/axios';
+import CastsModule, { getCastsStore } from '@/store/casts';
 
 @Component
 export default class CastForm extends mixins(NotifySnackbarMixin) {
@@ -101,6 +101,8 @@ export default class CastForm extends mixins(NotifySnackbarMixin) {
   datepickerMenu = false;
   form!: CastFormData;
   loading = false;
+
+  private castsStore: CastsModule = getCastsStore();
 
   $refs!: {
     observer: InstanceType<typeof ValidationObserver>;
@@ -148,8 +150,8 @@ export default class CastForm extends mixins(NotifySnackbarMixin) {
     }
     if (this.edit) {
       this.loading = true;
-      await CastApi
-        .delete(this.edit.id)
+      await this.castsStore
+        .removeCast(this.edit.id)
         .then(() => this.delete(this.edit as Cast))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Cast delete failed', e.response?.status);
@@ -165,9 +167,9 @@ export default class CastForm extends mixins(NotifySnackbarMixin) {
       this.form.name = this.$options.filters?.capitalize(this.form.name);
       this.loading = true;
 
-      await CastApi
-        .create(this.form)
-        .then((res) => this.create(res.data))
+      await this.castsStore
+        .addCast(this.form)
+        .then((cast) => this.create(cast))
         .catch((e: AxiosError) => {
           if (e.response) {
             if (e.response.status === 409) {
@@ -190,12 +192,12 @@ export default class CastForm extends mixins(NotifySnackbarMixin) {
       this.form.name = this.$options.filters?.capitalize(this.form.name);
 
       this.loading = true;
-      await CastApi
-        .update(this.edit.id, {
-          ...this.edit,
-          ...this.form,
+      await this.castsStore
+        .updateCast({
+          id: this.edit.id,
+          cast: { ...this.edit, ...this.form },
         })
-        .then((res) => this.update(res.data))
+        .then((cast) => this.update(cast))
         .catch((e: AxiosError) => {
           this.showErrorSnackbar('Cast update failed', e.response?.status);
         })

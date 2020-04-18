@@ -103,9 +103,9 @@ import { mixins } from 'vue-class-component';
 import NotifySnackbarMixin from '@/mixins/notify-snackbar-mixin';
 import MovieApi from '@/api/movie-api';
 import { AxiosError } from '@/api/axios';
-import CastApi from '@/api/cast-api';
 import { getCategoriesStore } from '@/store/categories';
 import { getTagsStore } from '@/store/tags';
+import { getCastsStore } from '@/store/casts';
 
 @Component
 export default class MovieForm extends mixins(NotifySnackbarMixin) {
@@ -129,10 +129,10 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
   }
 
   async created() {
-    await CastApi
-      .getAll()
-      .then((cast) => {
-        this.casts = cast.data;
+    await getCastsStore()
+      .fetchCasts()
+      .then((casts) => {
+        this.casts = casts;
       })
       .catch((e: AxiosError) => {
         this.showErrorSnackbar('Cannot get cast list', e.response?.status);

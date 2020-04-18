@@ -18,7 +18,7 @@ import BaseImagePicker from '@/components/BaseImagePicker.vue';
 import FileApi, { FileType } from '@/api/file-api';
 import { AxiosResponse } from 'axios';
 import FileMetadata from '@/models/file-metadata';
-import CastApi from '@/api/cast-api';
+import CastsModule, { getCastsStore } from '@/store/casts';
 
 
 @Component({
@@ -27,6 +27,7 @@ import CastApi from '@/api/cast-api';
 export default class CastCoverUpload extends mixins(NotifySnackbarMixin) {
   @Prop() cast!: Cast;
   loading = false;
+  private castsStore: CastsModule = getCastsStore();
 
   get src(): string {
     return this.cast?.image || '';
@@ -71,10 +72,10 @@ export default class CastCoverUpload extends mixins(NotifySnackbarMixin) {
 
   private async updateCast(image: string) {
     try {
-      await CastApi.update(
-        this.cast.id,
-        { ...this.cast, image },
-      );
+      await this.castsStore.updateCast({
+        id: this.cast.id,
+        cast: { ...this.cast, image },
+      });
       this.imageChange(image);
     } catch (e) {
       await FileApi.delete(FileType.IMAGE, image);
