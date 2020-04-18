@@ -61,7 +61,7 @@ export default class TagsModule extends VuexModule {
   async fetchTags(): Promise<Tag[]> {
     if (!this.loaded) {
       return TagApi
-        .getAll()
+        .getAll({ params: { sort: 'updatedAt,desc' } })
         .then((res) => {
           this.SET_TAGS(res.data);
           this.SET_LOADED(true);

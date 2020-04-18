@@ -61,7 +61,7 @@ export default class CategoriesModule extends VuexModule {
   async fetchCategories(): Promise<Category[]> {
     if (!this.loaded) {
       return CategoryApi
-        .getAll()
+        .getAll({ params: { sort: 'updatedAt,desc' } })
         .then((res) => {
           this.SET_CATEGORIES(res.data);
           this.SET_LOADED(true);

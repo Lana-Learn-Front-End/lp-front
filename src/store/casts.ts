@@ -61,7 +61,7 @@ export default class CastsModule extends VuexModule {
   async fetchCasts(): Promise<Cast[]> {
     if (!this.loaded) {
       return CastApi
-        .getAll()
+        .getAll({ params: { sort: 'updatedAt,desc' } })
         .then((res) => {
           this.SET_CASTS(res.data);
           this.SET_LOADED(true);
@@ -76,7 +76,7 @@ export default class CastsModule extends VuexModule {
     return CastApi
       .create(cast)
       .then((res) => {
-        this.casts.push(res.data);
+        this.casts.unshift(res.data);
         return res.data;
       });
   }
