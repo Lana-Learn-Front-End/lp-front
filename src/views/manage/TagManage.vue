@@ -41,25 +41,38 @@
         </v-text-field>
         <v-spacer class="d-none d-sm-block"></v-spacer>
       </div>
-      <div class="mt-5 mt-md-8">
+      <div class="mb-2 mb-md-4">
         <v-overlay :value="loading" absolute>
           <v-progress-circular indeterminate></v-progress-circular>
         </v-overlay>
 
-        <div class="text-center" v-show="!loading && filteredTags.length  === 0">
+        <div class="text-center" v-show="!loading && filteredTags.length === 0">
           <span class="body-1">No tags found</span>
         </div>
 
         <div>
-          <v-chip
-            v-for="tag of filteredTags"
-            v-bind:key="tag.name"
-            class="my-1 mx-1 mx-md-2"
-            @click.stop="openUpdateDialog(tag)"
-          >
-            <v-icon left>label</v-icon>
-            {{ tag.name }}
-          </v-chip>
+          <v-row v-for="(group, key) in filteredTagGroups" :key="key">
+            <v-col cols="12">
+              <h2 class="text--primary my-2">{{ key }}</h2>
+              <v-divider></v-divider>
+            </v-col>
+            <v-col
+              v-for="tag of group"
+              :key="tag.id"
+              xs="6"
+              sm="4"
+              md="3"
+              lg="2"
+            >
+              <v-chip
+                class="mx-md-2"
+                @click.stop="openUpdateDialog(tag)"
+              >
+                <v-icon left>label</v-icon>
+                {{ tag.name }}
+              </v-chip>
+            </v-col>
+          </v-row>
 
           <v-dialog
             retain-focus
@@ -121,6 +134,18 @@ export default class TagManage extends Vue {
     return this.tagStore.tags.filter(
       (tag: Tag) => filterReg.test(tag.name),
     );
+  }
+
+  get filteredTagGroups(): { [key: string]: Tag[] } {
+    return this.filteredTags
+      .reduce((groups: any, tag: Tag) => {
+        if (!groups[tag.name.charAt(0)]) {
+          groups[tag.name.charAt(0)] = [tag];
+        } else {
+          groups[tag.name.charAt(0)].push(tag);
+        }
+        return groups;
+      }, {});
   }
 
   onUpdatedOrDeleted() {
