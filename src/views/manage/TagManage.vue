@@ -33,7 +33,8 @@
       <div class="d-flex align-center">
         <v-text-field
           single-line
-          v-model.trim="search"
+          :value="search"
+          @input="onSearch($event)"
           append-icon="search"
           name="search"
           placeholder="Search tags"
@@ -51,7 +52,10 @@
         </div>
 
         <div>
-          <v-row v-for="(group, key) in filteredTagGroups" :key="key">
+          <v-row
+            v-for="(group, key) in filteredTagGroups"
+            :key="key"
+          >
             <v-col cols="12">
               <h2 class="text--primary my-2">{{ key }}</h2>
               <v-divider></v-divider>
@@ -68,7 +72,6 @@
                 class="mx-md-2"
                 @click.stop="openUpdateDialog(tag)"
               >
-                <v-icon left>label</v-icon>
                 {{ tag.name }}
               </v-chip>
             </v-col>
@@ -106,6 +109,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import Tag from '@/models/tag';
 import TagForm from '@/components/TagForm.vue';
 import TagsModule, { getTagsStore } from '@/store/tags';
+import { Debounce } from 'vue-debounce-decorator';
 
 @Component({
   components: { TagForm },
@@ -127,6 +131,11 @@ export default class TagManage extends Vue {
     this.loading = true;
     await this.tagStore.fetchTags();
     this.loading = false;
+  }
+
+  @Debounce(350)
+  onSearch(keyword: string) {
+    this.search = keyword;
   }
 
   get filteredTags(): Tag[] {

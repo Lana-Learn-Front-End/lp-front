@@ -45,20 +45,20 @@
           append-icon="search"
           name="search"
           placeholder="Search movies"
-          v-model.trim="search"
-          @keyup.enter="onSearch()"
+          :value="search"
+          @input="onSearch($event)"
         >
         </v-text-field>
         <MovieSortingDropdown class="ml-3" v-model="sort"></MovieSortingDropdown>
         <v-spacer class="d-none d-sm-block"></v-spacer>
       </div>
 
-      <div class="mt-5 mt-md-8">
+      <div class="mt-5 mt-md-8" style="position: relative">
         <div class="text-center" v-show="!loading && movies.length  === 0">
           <span class="body-1">No movies found</span>
         </div>
 
-        <v-overlay :value="loading" absolute>
+        <v-overlay :value="loading" absolute :opacity="0.8">
           <v-progress-circular indeterminate></v-progress-circular>
         </v-overlay>
 
@@ -116,6 +116,7 @@ import MovieSortingDropdown from '@/components/movie/MovieSortingDropdown.vue';
 import MovieEdit from '@/components/movie/MovieEdit.vue';
 import MovieCard from '@/components/movie/MovieCard.vue';
 import MovieApi from '@/api/movie-api';
+import { Debounce } from 'vue-debounce-decorator';
 
 @Component({
   components: { MovieCard, MovieEdit, MovieSortingDropdown, BasePlaceholderImage, MovieForm },
@@ -153,7 +154,9 @@ export default class MovieManage extends Vue {
     this.fetchMovies();
   }
 
-  onSearch() {
+  @Debounce(350)
+  onSearch(keyword: string) {
+    this.search = keyword;
     if (this.page === 1) {
       this.fetchMovies();
     } else {
