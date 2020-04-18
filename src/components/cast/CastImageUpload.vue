@@ -3,6 +3,7 @@
     :default-image="src | image"
     :loading="loading"
     :aspect-ratio="1"
+    icon="person"
     @upload="onUpload($event)"
     @remove="onRemove()"
   >

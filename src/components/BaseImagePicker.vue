@@ -18,7 +18,7 @@
     <base-placeholder-image
       v-if="!src"
       :aspect-ratio="aspectRatio"
-      :icon="loading ? '' : 'insert_photo'"
+      :icon="loading ? '' : icon"
     >
     </base-placeholder-image>
 
@@ -82,6 +82,7 @@ import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
   components: { BasePlaceholderImage },
 })
 export default class BaseImagePicker extends Vue {
+  @Prop({ type: String, default: 'insert_photo' }) icon!: string;
   @Prop() defaultImage!: string;
   @Prop() loading!: boolean;
   @Prop() aspectRatio!: number | string;

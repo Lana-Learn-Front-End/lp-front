@@ -82,6 +82,7 @@
                 <base-placeholder-image
                   v-if="!cast.image"
                   :aspect-ratio="1"
+                  icon="person"
                 >
                 </base-placeholder-image>
               </div>
