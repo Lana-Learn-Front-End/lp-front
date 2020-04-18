@@ -41,12 +41,12 @@ export default class MovieCoverUpload extends mixins(NotifySnackbarMixin) {
     this.loading = true;
     try {
       if (this.movie.cover) {
-        await FileApi.update(FileType.IMAGE, this.movie.cover, img);
-        this.imageChange(this.movie.cover);
-      } else {
-        const res: AxiosResponse<FileMetadata> = await FileApi.create(FileType.IMAGE, img);
-        await this.updateMovie(res.data.id);
+        await this.removeImage(this.src);
+        this.showSnackbar('Uploading new cover...', { timeout: 0 });
       }
+      const res: AxiosResponse<FileMetadata> = await FileApi.create(FileType.IMAGE, img);
+      await this.updateMovie(res.data.id);
+      this.imageChange(res.data.id);
     } catch (e) {
       this.showErrorSnackbar('Upload Failed!', e.response?.status);
     } finally {
@@ -57,9 +57,7 @@ export default class MovieCoverUpload extends mixins(NotifySnackbarMixin) {
   async onRemove(): Promise<void> {
     this.loading = true;
     try {
-      const fileId: string = this.src;
-      await this.updateMovie('');
-      await FileApi.delete(FileType.IMAGE, fileId);
+      await this.removeImage(this.src);
       this.imageChange('');
     } catch (e) {
       this.showErrorSnackbar('Remove Failed!', e.response?.status);
@@ -68,13 +66,17 @@ export default class MovieCoverUpload extends mixins(NotifySnackbarMixin) {
     }
   }
 
+  private async removeImage(image: string) {
+    await this.updateMovie('');
+    await FileApi.delete(FileType.IMAGE, image);
+  }
+
   private async updateMovie(cover: string) {
     try {
       await MovieApi.update(
         this.movie.id,
         { ...this.movie, cover },
       );
-      this.imageChange(cover);
     } catch (e) {
       if (cover && this.$options.filters?.mediaSource) {
         await FileApi.delete(FileType.IMAGE, cover);

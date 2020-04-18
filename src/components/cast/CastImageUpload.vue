@@ -43,12 +43,12 @@ export default class CastCoverUpload extends mixins(NotifySnackbarMixin) {
     this.loading = true;
     try {
       if (this.cast.image) {
-        await FileApi.update(FileType.IMAGE, this.cast.image, img);
-        this.imageChange(this.cast.image);
-      } else {
-        const res: AxiosResponse<FileMetadata> = await FileApi.create(FileType.IMAGE, img);
-        await this.updateCast(res.data.id);
+        await this.removeImage(this.src);
+        this.showSnackbar('Uploading new image...', { timeout: 0 });
       }
+      const res: AxiosResponse<FileMetadata> = await FileApi.create(FileType.IMAGE, img);
+      await this.updateCast(res.data.id);
+      this.imageChange(res.data.id);
     } catch (e) {
       this.showErrorSnackbar('Upload Failed!', e.response?.status);
     } finally {
@@ -59,9 +59,7 @@ export default class CastCoverUpload extends mixins(NotifySnackbarMixin) {
   async onRemove(): Promise<void> {
     this.loading = true;
     try {
-      const fileId: string = this.src;
-      await this.updateCast('');
-      await FileApi.delete(FileType.IMAGE, fileId);
+      await this.removeImage(this.src);
       this.imageChange('');
     } catch (e) {
       this.showErrorSnackbar('Remove Failed!', e.response?.status);
@@ -70,13 +68,17 @@ export default class CastCoverUpload extends mixins(NotifySnackbarMixin) {
     }
   }
 
+  private async removeImage(image: string) {
+    await this.updateCast('');
+    await FileApi.delete(FileType.IMAGE, image);
+  }
+
   private async updateCast(image: string) {
     try {
       await this.castsStore.updateCast({
         id: this.cast.id,
         cast: { ...this.cast, image },
       });
-      this.imageChange(image);
     } catch (e) {
       await FileApi.delete(FileType.IMAGE, image);
       this.showErrorSnackbar('Upload Failed!', e.response?.status);

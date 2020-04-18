@@ -1,26 +1,36 @@
 <template>
   <div class="img-container elevation-2">
     <v-img
-      v-if="src && !loading"
+      v-if="src"
       :src="src"
       :aspect-ratio="aspectRatio"
     >
+      <template v-slot:placeholder>
+        <v-row
+          class="fill-height ma-0"
+          align="center"
+          justify="center"
+        >
+          <v-progress-circular indeterminate></v-progress-circular>
+        </v-row>
+      </template>
     </v-img>
-
     <base-placeholder-image
-      v-if="!src || loading"
+      v-if="!src"
       :aspect-ratio="aspectRatio"
-      :loading="loading"
+      :icon="loading ? '' : 'insert_photo'"
     >
     </base-placeholder-image>
 
-    <div v-show="!img || loading" class="img-btn">
+    <v-overlay :value="loading" absolute>
+      <v-progress-circular indeterminate></v-progress-circular>
+    </v-overlay>
+
+    <div v-show="!img && !loading" class="img-btn">
       <v-btn
         fab
         small
         @click="$refs.file.click()"
-        :loading="loading"
-        :disabled="loading"
       >
         <v-icon>edit</v-icon>
       </v-btn>
@@ -31,8 +41,6 @@
         small
         class="ml-2 error--text"
         @click="remove()"
-        :loading="loading"
-        :disabled="loading"
       >
         <v-icon>clear</v-icon>
       </v-btn>
@@ -67,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
+import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator';
 import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
 
 @Component({
@@ -78,6 +86,7 @@ export default class BaseImagePicker extends Vue {
   @Prop() loading!: boolean;
   @Prop() aspectRatio!: number | string;
 
+  src = '';
   img?: File;
 
   $refs!: {
@@ -90,29 +99,28 @@ export default class BaseImagePicker extends Vue {
     };
   }
 
-  get src(): string {
-    if (this.img) {
-      return URL.createObjectURL(this.img);
-    }
-    return this.defaultImage || '';
+  @Watch('defaultImage', { immediate: true })
+  onDefaultImageChange(src: string) {
+    this.src = src;
+    this.img = undefined;
   }
 
   onImgPicked(files: FileList) {
     if (files.length > 0) {
       [this.img] = files;
+      this.src = URL.createObjectURL(this.img);
     }
   }
 
   @Emit()
   upload(): File | undefined {
-    const blob: File | undefined = this.img;
-    this.img = undefined;
-    return blob;
+    return this.img;
   }
 
   @Emit()
   remove() {
     this.img = undefined;
+    this.src = this.defaultImage || '';
   }
 }
 </script>

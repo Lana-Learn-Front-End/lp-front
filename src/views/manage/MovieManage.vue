@@ -163,15 +163,7 @@ export default class MovieManage extends Vue {
   }
 
   onMovieUpdate(movie: Movie) {
-    if (this.updateDialogMovie && this.updateDialogMovie.cover === movie.cover) {
-      // set src to empty to force image reload
-      this.updateDialogMovie.cover = '';
-    }
-    // wait for the change detect to run before change the src again
-    const origin: Movie | null = this.updateDialogMovie;
-    setTimeout(() => {
-      Object.assign(origin, movie);
-    });
+    Object.assign(this.updateDialogMovie, movie);
   }
 
   async onMovieDelete() {
