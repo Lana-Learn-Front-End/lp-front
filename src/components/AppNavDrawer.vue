@@ -12,7 +12,24 @@
         </v-list-item-icon>
         <v-list-item-title>Home</v-list-item-title>
       </v-list-item>
-
+      <v-list-item to="/hot">
+        <v-list-item-icon>
+          <v-icon>whatshot</v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>Hot</v-list-item-title>
+      </v-list-item>
+      <v-list-item to="/movies">
+        <v-list-item-icon>
+          <v-icon>folder_open</v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>Movies</v-list-item-title>
+      </v-list-item>
+      <v-list-item to="/casts">
+        <v-list-item-icon>
+          <v-icon>recent_actors</v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>Casts</v-list-item-title>
+      </v-list-item>
       <div>
         <v-divider></v-divider>
         <v-subheader>Administration</v-subheader>
