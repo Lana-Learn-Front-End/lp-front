@@ -6,8 +6,8 @@ export default class NotifySnackbarMixin extends Vue {
     error: string,
     code?: string | number,
     options?: {
-      timeout: number;
-      closeable: boolean;
+      timeout?: number;
+      closeable?: boolean;
     },
   ) {
     this.$snackbar.showError({
@@ -24,9 +24,9 @@ export default class NotifySnackbarMixin extends Vue {
   showSnackbar(
     message: string,
     options?: {
-      color: string;
-      timeout: number;
-      closeable: boolean;
+      color?: string;
+      timeout?: number;
+      closeable?: boolean;
     },
   ) {
     this.$snackbar.show({
