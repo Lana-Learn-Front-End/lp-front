@@ -6,6 +6,7 @@ import ContentManage from '@/views/manage/ContentManager.vue';
 import CategoryManage from '@/views/manage/CategoryManage.vue';
 import CastManage from '@/views/manage/CastManage.vue';
 import Home from '@/views/Home.vue';
+import MovieDetail from '@/views/MovieDetail.vue';
 
 Vue.use(VueRouter);
 
@@ -19,6 +20,19 @@ const routes: RouteConfig[] = [
     path: '/home',
     name: 'Home',
     component: Home,
+  },
+  {
+    path: '/movies/:id',
+    name: 'MovieDetail',
+    component: MovieDetail,
+  },
+  {
+    path: '/casts/:id',
+    name: 'CastDetail',
+  },
+  {
+    path: '/tags/:id',
+    name: 'TagDetail',
   },
   {
     path: '/manage',
