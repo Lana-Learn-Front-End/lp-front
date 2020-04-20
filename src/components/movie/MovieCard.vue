@@ -82,7 +82,6 @@ export default class MovieCard extends Vue {
   }
 
   @Emit()
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   click() {
   }
 }

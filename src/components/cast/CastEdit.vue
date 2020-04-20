@@ -57,7 +57,6 @@ export default class CastEdit extends Vue {
   }
 
   @Emit('complete')
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onComplete(): void {
   }
 }

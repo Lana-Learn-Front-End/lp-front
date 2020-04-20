@@ -39,7 +39,8 @@ module.exports = {
     'max-len': ['warn', 120],
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
+    '@typescript-eslint/no-empty-function': 'off',
     'import/no-named-default': 'off',
-    'import/prefer-default-export': 'warn'
+    'import/prefer-default-export': 'warn',
   },
 };

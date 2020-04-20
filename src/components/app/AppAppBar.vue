@@ -58,7 +58,6 @@ export default class AppAppBar extends Vue {
   searchExtension = false;
 
   @Emit('click:nav-icon')
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onNavIconClicked() {
   }
 
