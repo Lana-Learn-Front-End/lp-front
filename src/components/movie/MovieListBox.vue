@@ -68,6 +68,7 @@ export default class MovieListBox extends Vue {
   @Prop({ type: String, default: 'Movies' }) title!: string;
   @Prop({ type: [String, Object] }) to?: string | Route;
   @Prop({ type: Number, default: 1 }) rowsPerPage!: number;
+  @Prop({ type: Boolean }) autoSwitch!: boolean;
 
   window = 0;
   private windowAutoSwitchId?: number;
@@ -79,13 +80,13 @@ export default class MovieListBox extends Vue {
   }
 
   destroyed() {
-    if (this.windowAutoSwitchId !== undefined) {
+    if (!this.autoSwitch || this.windowAutoSwitchId !== undefined) {
       clearInterval(this.windowAutoSwitchId);
     }
   }
 
   startAutoSwitch() {
-    if (this.windowAutoSwitchId !== undefined) {
+    if (!this.autoSwitch || this.windowAutoSwitchId !== undefined) {
       return;
     }
     this.windowAutoSwitchId = setInterval(() => {
