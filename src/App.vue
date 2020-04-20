@@ -1,17 +1,11 @@
 <template>
   <v-app>
-    <v-app-bar clipped-left app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer">
-      </v-app-bar-nav-icon>
-      <v-toolbar-title> App</v-toolbar-title>
-    </v-app-bar>
-
+    <app-app-bar @click:nav-icon="drawer = !drawer"></app-app-bar>
     <app-nav-drawer v-model="drawer"></app-nav-drawer>
-
     <v-content>
       <v-container fill-height class="align-start">
         <v-row justify="center">
-          <v-col lg="11" xl="10">
+          <v-col lg="11">
             <router-view></router-view>
           </v-col>
         </v-row>
@@ -24,11 +18,12 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import TheSnackbar from '@/components/notify/TheSnackbar.vue';
-import AppNavDrawer from '@/components/AppNavDrawer.vue';
+import AppNavDrawer from '@/components/app/AppNavDrawer.vue';
 import TheNotifyModal from '@/components/notify/TheNotifyModal.vue';
+import AppAppBar from '@/components/app/AppAppBar.vue';
 
 @Component({
-  components: { TheNotifyModal, AppNavDrawer, TheSnackbar },
+  components: { AppAppBar, TheNotifyModal, AppNavDrawer, TheSnackbar },
 })
 export default class App extends Vue {
   drawer = false;
