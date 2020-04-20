@@ -58,14 +58,20 @@
         :movies="relatedCast"
         v-if="relatedCast.length > 0"
         class="mb-5 mb-lg-8"
+        cols="12"
+        sm="6"
+        md="4"
       >
       </movie-list-box>
       <movie-list-box
         title="Related tag"
         :movies="relatedTag"
-        :rows-per-page="2"
         v-if="relatedTag.length > 0"
         class="mb-5 mb-lg-8"
+        rows="2"
+        cols="12"
+        sm="6"
+        md="4"
       >
       </movie-list-box>
     </div>

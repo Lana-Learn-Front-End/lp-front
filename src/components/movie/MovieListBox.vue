@@ -36,9 +36,10 @@
             <v-col
               v-for="movie of group"
               :key="movie.id"
-              cols="12"
-              sm="6"
-              md="4"
+              :cols="cols"
+              :sm="sm"
+              :md="md"
+              :lg="lg"
             >
               <movie-card
                 class="h-100"
@@ -55,20 +56,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import Movie from '@/models/movie';
 import MovieCard from '@/components/movie/MovieCard.vue';
 import { Route } from 'vue-router';
+import { mixins } from 'vue-class-component';
+import GridLayoutMixin from '@/mixins/grid-layout-mixins';
 
 @Component({
   components: { MovieCard },
 })
-export default class MovieListBox extends Vue {
+export default class MovieListBox extends mixins(GridLayoutMixin) {
   @Prop({ type: Array, required: true }) movies!: Movie[];
   @Prop({ type: String, default: 'Movies' }) title!: string;
   @Prop({ type: [String, Object] }) to?: string | Route;
-  @Prop({ type: Number, default: 1 }) rowsPerPage!: number;
   @Prop({ type: Boolean }) autoSwitch!: boolean;
+  @Prop({ type: [Number, String, Boolean], default: false }) rows!: number | string;
 
   window = 0;
   private windowAutoSwitchId?: number;
@@ -113,13 +116,25 @@ export default class MovieListBox extends Vue {
   }
 
   get itemPerGroup(): number {
-    if (this.$vuetify.breakpoint.xsOnly) {
-      return this.rowsPerPage;
+    if (this.$vuetify.breakpoint.xl && this.xl) {
+      return calculateNumberOfItem(this.rows, this.xl);
     }
-    if (this.$vuetify.breakpoint.smOnly) {
-      return this.rowsPerPage * 2;
+    if (this.$vuetify.breakpoint.lgAndUp && this.lg) {
+      return calculateNumberOfItem(this.rows, this.lg);
     }
-    return this.rowsPerPage * 3;
+    if (this.$vuetify.breakpoint.mdAndUp && this.md) {
+      return calculateNumberOfItem(this.rows, this.md);
+    }
+    if (this.$vuetify.breakpoint.smAndUp && this.sm) {
+      return calculateNumberOfItem(this.rows, this.sm);
+    }
+    return calculateNumberOfItem(this.rows, this.cols);
   }
+}
+
+function calculateNumberOfItem(rows: number | string | boolean, cols: number | string | boolean) {
+  cols = Number(cols) || 12;
+  rows = Number(rows) || 1;
+  return rows * Math.floor(12 / cols);
 }
 </script>

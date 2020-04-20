@@ -4,6 +4,9 @@
       :movies="featuredMovies"
       :rows-per-page="2"
       title="Featured videos"
+      cols="12"
+      sm="6"
+      md="4"
     >
     </movie-list-box>
     <movie-list-box
@@ -11,6 +14,9 @@
       :rows-per-page="2"
       title="Most viewed"
       class="mt-5"
+      cols="12"
+      sm="6"
+      md="4"
     >
     </movie-list-box>
   </div>
