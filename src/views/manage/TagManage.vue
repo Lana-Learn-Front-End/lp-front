@@ -109,7 +109,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import Tag from '@/models/tag';
 import TagForm from '@/components/TagForm.vue';
 import TagsModule, { getTagsStore } from '@/store/tags';
-import { Debounce } from 'vue-debounce-decorator';
+import { Debounce } from '@/core/decorators';
 
 @Component({
   components: { TagForm },

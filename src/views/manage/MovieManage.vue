@@ -116,7 +116,7 @@ import MovieSortingDropdown from '@/components/movie/MovieSortingDropdown.vue';
 import MovieEdit from '@/components/movie/MovieEdit.vue';
 import MovieCard from '@/components/movie/MovieCard.vue';
 import MovieApi from '@/api/movie-api';
-import { Debounce } from 'vue-debounce-decorator';
+import { Debounce } from '@/core/decorators';
 
 @Component({
   components: { MovieCard, MovieEdit, MovieSortingDropdown, BasePlaceholderImage, MovieForm },
