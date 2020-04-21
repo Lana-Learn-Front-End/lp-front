@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator';
+import { Component, Emit, Prop, Ref, Watch } from 'vue-property-decorator';
 import Category from '@/models/category';
 import { ValidationObserver } from 'vee-validate';
 import { mixins } from 'vue-class-component';
@@ -64,9 +64,7 @@ export default class CategoryForm extends mixins(NotifySnackbarMixin) {
   name = '';
   private categoriesStore: CategoriesModule = getCategoriesStore();
 
-  $refs!: {
-    observer: InstanceType<typeof ValidationObserver>;
-  };
+  @Ref() readonly observer!: InstanceType<typeof ValidationObserver>;
 
   @Watch('edit', { immediate: true })
   categoryChanged(category: Category) {
@@ -120,7 +118,7 @@ export default class CategoryForm extends mixins(NotifySnackbarMixin) {
         .then((category) => this.create(category))
         .catch((e: AxiosError) => {
           if (e.response && e.response.status === 409) {
-            this.$refs.observer.setErrors({
+            this.observer.setErrors({
               name: 'The name already existed',
             });
           } else {
@@ -154,13 +152,13 @@ export default class CategoryForm extends mixins(NotifySnackbarMixin) {
   }
 
   private async isFormValid(): Promise<boolean> {
-    await this.$refs.observer.validate();
-    return Object.values(this.$refs.observer.fields).every((field) => field.valid);
+    await this.observer.validate();
+    return Object.values(this.observer.fields).every((field) => field.valid);
   }
 
   reset() {
     this.name = '';
-    this.$refs.observer.reset();
+    this.observer.reset();
   }
 }
 </script>

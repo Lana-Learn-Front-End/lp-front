@@ -102,7 +102,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Ref, Vue } from 'vue-property-decorator';
 import Category from '@/models/category';
 import CategoryForm from '@/components/CategoryForm.vue';
 import CategoriesModule, { getCategoriesStore } from '@/store/categories';
@@ -119,9 +119,7 @@ export default class CategoryManage extends Vue {
 
   private categoriesStore: CategoriesModule = getCategoriesStore();
 
-  $refs!: {
-    createForm: CategoryForm & { reset(): void };
-  };
+  @Ref() readonly createForm!: CategoryForm & { reset(): void };
 
   async created() {
     this.loading = true;
@@ -175,7 +173,7 @@ export default class CategoryManage extends Vue {
 
   closeCreateDialog() {
     this.createDialog = false;
-    this.$refs.createForm.reset();
+    this.createForm.reset();
   }
 }
 </script>

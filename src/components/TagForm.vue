@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator';
+import { Component, Emit, Prop, Ref, Watch } from 'vue-property-decorator';
 import Tag from '@/models/tag';
 import { ValidationObserver } from 'vee-validate';
 import { mixins } from 'vue-class-component';
@@ -64,9 +64,7 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
   name = '';
   private tagsStore: TagsModule = getTagsStore();
 
-  $refs!: {
-    observer: InstanceType<typeof ValidationObserver>;
-  };
+  @Ref() readonly observer!: InstanceType<typeof ValidationObserver>;
 
   @Watch('edit', { immediate: true })
   tagChanged(tag: Tag) {
@@ -121,7 +119,7 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
         .then((tag) => this.create(tag))
         .catch((e: AxiosError) => {
           if (e.response && e.response.status === 409) {
-            this.$refs.observer.setErrors({
+            this.observer.setErrors({
               name: 'The name already existed',
             });
           } else {
@@ -153,13 +151,13 @@ export default class TagForm extends mixins(NotifySnackbarMixin) {
   }
 
   private async isFormValid(): Promise<boolean> {
-    await this.$refs.observer.validate();
-    return Object.values(this.$refs.observer.fields).every((field) => field.valid);
+    await this.observer.validate();
+    return Object.values(this.observer.fields).every((field) => field.valid);
   }
 
   reset() {
     this.name = '';
-    this.$refs.observer.reset();
+    this.observer.reset();
   }
 }
 </script>

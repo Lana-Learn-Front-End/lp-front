@@ -122,7 +122,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Ref, Vue } from 'vue-property-decorator';
 import CastForm from '@/components/cast/CastForm.vue';
 import Cast from '@/models/cast';
 import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
@@ -145,9 +145,7 @@ export default class CastManage extends Vue {
 
   private castsStore: CastsModule = getCastsStore();
 
-  $refs!: {
-    createForm: CastForm & { reset(): void };
-  };
+  @Ref() readonly createForm!: CastForm & { reset(): void };
 
   created() {
     this.castsStore.fetchCasts();
@@ -164,7 +162,7 @@ export default class CastManage extends Vue {
 
   closeCreateDialog() {
     this.createDialog = false;
-    this.$refs.createForm.reset();
+    this.createForm.reset();
   }
 
   openUpdateDialog(cast: Cast) {

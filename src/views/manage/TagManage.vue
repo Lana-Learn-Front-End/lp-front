@@ -105,7 +105,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Ref, Vue } from 'vue-property-decorator';
 import Tag from '@/models/tag';
 import TagForm from '@/components/TagForm.vue';
 import TagsModule, { getTagsStore } from '@/store/tags';
@@ -123,9 +123,7 @@ export default class TagManage extends Vue {
 
   private tagStore: TagsModule = getTagsStore();
 
-  $refs!: {
-    createForm: TagForm & { reset(): void };
-  };
+  @Ref() readonly createForm!: TagForm & { reset(): void };
 
   async created() {
     this.loading = true;
@@ -178,7 +176,7 @@ export default class TagManage extends Vue {
 
   closeCreateDialog() {
     this.createDialog = false;
-    this.$refs.createForm.reset();
+    this.createForm.reset();
   }
 }
 </script>

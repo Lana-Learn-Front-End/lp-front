@@ -93,7 +93,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator';
+import { Component, Emit, Prop, Ref, Watch } from 'vue-property-decorator';
 import { ValidationObserver } from 'vee-validate';
 import Cast from '@/models/cast';
 import Tag from '@/models/tag';
@@ -118,9 +118,7 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
   categories: Category[] = [];
   loading = false;
 
-  $refs!: {
-    observer: InstanceType<typeof ValidationObserver>;
-  };
+  @Ref() readonly observer!: InstanceType<typeof ValidationObserver>;
 
   data() {
     return {
@@ -214,7 +212,7 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
         .catch((e: AxiosError) => {
           if (e.response) {
             if (e.response.status === 409) {
-              this.$refs.observer.setErrors({
+              this.observer.setErrors({
                 code: 'The code already existed',
               });
             } else {
@@ -250,12 +248,12 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
   }
 
   private async isFormValid(): Promise<boolean> {
-    await this.$refs.observer.validate();
-    return Object.values(this.$refs.observer.fields).every((field) => field.valid);
+    await this.observer.validate();
+    return Object.values(this.observer.fields).every((field) => field.valid);
   }
 
   reset() {
-    this.$refs.observer.reset();
+    this.observer.reset();
     this.form = getDefaultFormData();
   }
 }

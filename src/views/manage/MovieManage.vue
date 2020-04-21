@@ -107,7 +107,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Ref, Vue, Watch } from 'vue-property-decorator';
 import MovieForm from '@/components/movie/MovieForm.vue';
 import Movie from '@/models/movie';
 import BasePlaceholderImage from '@/components/BasePlaceholderImage.vue';
@@ -134,14 +134,10 @@ export default class MovieManage extends Vue {
   sort = 'updatedAt,desc';
   search = '';
 
-  $refs!: {
-    createForm: MovieForm & { reset(): void };
-  };
+  @Ref() readonly createForm!: MovieForm & { reset(): void };
 
   async created() {
-    this.loading = true;
     await this.fetchMovies();
-    this.loading = false;
   }
 
   @Watch('page')
@@ -192,7 +188,7 @@ export default class MovieManage extends Vue {
 
   closeCreateDialog() {
     this.createDialog = false;
-    this.$refs.createForm.reset();
+    this.createForm.reset();
   }
 
   async fetchMovies(): Promise<void> {
