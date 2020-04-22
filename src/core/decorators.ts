@@ -41,3 +41,21 @@ export function Hook(name?: string) {
     // as lifecycle-hooks are already registered
   });
 }
+
+export function RouterHook(name?: string) {
+  return createDecorator((componentOptions: any, handler) => {
+    if (!componentOptions.methods) {
+      throw new Error('This decorator must be used on a vue component method.');
+    }
+    if (![
+      'beforeRouteEnter',
+      'beforeRouteLeave',
+      'beforeRouteUpdate',
+    ].includes(name || handler)) {
+      throw new Error(`Invalid router hook: '${name || handler}'`);
+    }
+    // resign router hook
+    componentOptions[name || handler] = componentOptions.methods[handler];
+    delete componentOptions.methods[handler];
+  });
+}
