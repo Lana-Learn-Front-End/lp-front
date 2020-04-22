@@ -21,6 +21,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { SnackbarOptions } from '@/plugins/notify/snackbar';
+import { Hook } from '@/core/decorators';
 
 @Component
 export default class TheSnackbar extends Vue {
@@ -39,6 +40,7 @@ export default class TheSnackbar extends Vue {
     };
   }
 
+  @Hook()
   beforeMount() {
     this.$bus.$on('snackbar-show', (options: SnackbarOptions) => {
       this.active = false;

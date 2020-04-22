@@ -87,6 +87,7 @@ import MovieCard from '@/components/movie/MovieCard.vue';
 import Cast from '@/models/cast';
 import Tag from '@/models/tag';
 import MovieListBox from '@/components/movie/MovieListBox.vue';
+import { Hook } from '@/core/decorators';
 
 @Component({
   components: { MovieListBox, MovieCard, BasePlaceholderImage },
@@ -102,6 +103,7 @@ export default class MovieDetail extends Vue {
     };
   }
 
+  @Hook()
   async created() {
     // fallback to undefined because Number(undefined) is NaN,
     // while Number('') or Number(null) is 0

@@ -109,7 +109,7 @@ import { Component, Ref, Vue } from 'vue-property-decorator';
 import Tag from '@/models/tag';
 import TagForm from '@/components/TagForm.vue';
 import TagsModule, { getTagsStore } from '@/store/tags';
-import { Debounce } from '@/core/decorators';
+import { Debounce, Hook } from '@/core/decorators';
 
 @Component({
   components: { TagForm },
@@ -125,6 +125,7 @@ export default class TagManage extends Vue {
 
   @Ref() readonly createForm!: TagForm & { reset(): void };
 
+  @Hook()
   async created() {
     this.loading = true;
     await this.tagStore.fetchTags();

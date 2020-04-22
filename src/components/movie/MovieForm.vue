@@ -106,6 +106,7 @@ import { AxiosError } from '@/api/axios';
 import { getCategoriesStore } from '@/store/categories';
 import { getTagsStore } from '@/store/tags';
 import { getCastsStore } from '@/store/casts';
+import { Hook } from '@/core/decorators';
 
 @Component
 export default class MovieForm extends mixins(NotifySnackbarMixin) {
@@ -126,6 +127,7 @@ export default class MovieForm extends mixins(NotifySnackbarMixin) {
     };
   }
 
+  @Hook()
   async created() {
     await getCastsStore()
       .fetchCasts()

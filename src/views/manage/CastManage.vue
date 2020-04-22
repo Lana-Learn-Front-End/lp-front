@@ -130,6 +130,7 @@ import CastEdit from '@/components/cast/CastEdit.vue';
 import CastsModule, { getCastsStore } from '@/store/casts';
 import Page from '@/models/util/page';
 import { getPageFromArray } from '@/core/paginate';
+import { Hook } from '@/core/decorators';
 
 @Component({
   components: { BasePlaceholderImage, CastForm, CastEdit },
@@ -147,6 +148,7 @@ export default class CastManage extends Vue {
 
   @Ref() readonly createForm!: CastForm & { reset(): void };
 
+  @Hook()
   created() {
     this.castsStore.fetchCasts();
   }

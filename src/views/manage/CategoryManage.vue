@@ -106,6 +106,7 @@ import { Component, Ref, Vue } from 'vue-property-decorator';
 import Category from '@/models/category';
 import CategoryForm from '@/components/CategoryForm.vue';
 import CategoriesModule, { getCategoriesStore } from '@/store/categories';
+import { Hook } from '@/core/decorators';
 
 @Component({
   components: { CategoryForm },
@@ -121,6 +122,7 @@ export default class CategoryManage extends Vue {
 
   @Ref() readonly createForm!: CategoryForm & { reset(): void };
 
+  @Hook()
   async created() {
     this.loading = true;
     await this.categoriesStore.fetchCategories();

@@ -27,6 +27,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { Hook } from '@/core/decorators';
 
 @Component
 export default class TheNotifyModal extends Vue {
@@ -36,6 +37,7 @@ export default class TheNotifyModal extends Vue {
     type: 'alert',
   };
 
+  @Hook()
   beforeMount() {
     this.$bus.$on('notify-modal-alert', (opts: ModalOptions) => {
       opts.type = 'alert';

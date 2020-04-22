@@ -62,6 +62,7 @@ import MovieCard from '@/components/movie/MovieCard.vue';
 import { Route } from 'vue-router';
 import { mixins } from 'vue-class-component';
 import GridLayoutMixin from '@/mixins/grid-layout-mixins';
+import { Hook } from '@/core/decorators';
 
 @Component({
   components: { MovieCard },
@@ -82,6 +83,7 @@ export default class MovieListBox extends mixins(GridLayoutMixin) {
     };
   }
 
+  @Hook()
   destroyed() {
     if (!this.autoSwitch || this.windowAutoSwitchId !== undefined) {
       clearInterval(this.windowAutoSwitchId);
