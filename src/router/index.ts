@@ -7,6 +7,7 @@ import CategoryManage from '@/views/manage/CategoryManage.vue';
 import CastManage from '@/views/manage/CastManage.vue';
 import Home from '@/views/Home.vue';
 import MovieDetail from '@/views/MovieDetail.vue';
+import MovieSearch from '@/views/MovieSearch.vue';
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,11 @@ const routes: RouteConfig[] = [
     component: MovieDetail,
   },
   {
+    path: '/movies/search',
+    name: 'MovieSearch',
+    component: MovieSearch,
+  },
+  {
     path: '/casts/:id',
     name: 'CastDetail',
   },
@@ -45,7 +51,6 @@ const routes: RouteConfig[] = [
       },
       {
         path: 'movies',
-        name: 'MovieManage',
         component: MovieManage,
       },
       {
