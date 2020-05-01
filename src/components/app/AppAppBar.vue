@@ -15,6 +15,7 @@
         prepend-inner-icon="search"
         label="Search for movies"
         class="hidden-sm-and-down"
+        v-model="keyword"
         @keypress.enter="onSearch($event.target.value)"
       >
       </v-text-field>
@@ -38,6 +39,7 @@
             color="grey"
             prepend-inner-icon="search"
             label="Search for movies"
+            v-model="keyword"
             @click:clear="searchExtension = false"
             @keypress.enter="onSearch($event.target.value)"
             class="transparent"
@@ -56,6 +58,7 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
 export default class AppAppBar extends Vue {
   @Prop({ type: String, default: 'Application' }) title!: string;
   searchExtension = false;
+  keyword = '';
 
   @Emit('click:nav-icon')
   onNavIconClicked() {
@@ -66,6 +69,7 @@ export default class AppAppBar extends Vue {
   }
 
   onSearch(keyword: string) {
+    this.keyword = '';
     this.$router.push({
       name: 'MovieSearch',
       query: {
